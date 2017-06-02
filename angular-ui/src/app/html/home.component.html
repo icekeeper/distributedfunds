@@ -1,0 +1,68 @@
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">Create account</div>
+        <div class="panel-body">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="account-name">Name</label>
+                    <input #account_name type="text" id="account-name" class="form-control" placeholder="1234">
+                </div>
+                <div class="form-group">
+                    <select #parser_type id="account-type" class="selectpicker">
+                        <option value="RAIFFEISEN_CARD" selected>Raiffeisen card</option>
+                        <option value="TINKOFF">Tinkoff</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button id="create-account" class="btn btn-success" type="button"
+                            (click)="create(account_name.value, parser_type.value)">Create
+                    </button>
+                </div>
+            </form>
+            <div id="account-create-alerts-container" class="alerts-container"></div>
+        </div>
+    </div>
+    <div *ngIf="accounts.length > 0" class="panel panel-default">
+        <div class="panel-heading">Select account to upload</div>
+        <div class="panel-body">
+            <div id="upload-alerts-container">
+                <alert #alert></alert>
+            </div>
+            <transactions-deduplicate #transactionsDeduplicate></transactions-deduplicate>
+            <div id="accounts">
+                <div *ngFor="let account of accounts; let i = index" class="col-md-4 account">
+                    <div>
+                        <div class="account-icon pull-left" [style.background-color]="account.color"></div>
+                        <div class="account-control pull-right">
+                            <i class="account-upload fa fa-lg fa-upload" (click)="showStatementUploadDialog(uploadInput)"></i>
+                            <i class="account-edit fa fa-lg fa-pencil"></i>
+                            <i class="account-remove fa fa-lg fa-trash-o" (click)="delete(account.id, i)"></i>
+                        </div>
+                        <div class="account-name">
+                            {{account.name}}
+                        </div>
+                        <input #uploadInput class="account-statement-upload" type="file" (change)="uploadBankStatement(uploadInput, account.id, $event, alert, transactionsDeduplicate)" placeholder=""/>
+                        <div class="account-type">{{account.parserTypeName}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="account-remove-confirm-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Are you sure?</h4>
+                </div>
+                <div class="modal-body bg-danger">
+                    All transactions corresponding to this account will be deleted to. Remove account?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="remove-account">Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="log"></div>
+</div>

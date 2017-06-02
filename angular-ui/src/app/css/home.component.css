@@ -1,0 +1,69 @@
+#deduplicate {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.account {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.account > div {
+    height: 80px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid black;
+    position: relative;
+}
+
+.account .account-name {
+    margin-top: 0px;
+    width: 100%;
+    text-align: center;
+}
+
+.account .account-type {
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+    font-weight: bold;
+    font-size: large;
+}
+
+.account .account-control i {
+    /*color: #747474;*/
+    /*color: #747474;*/
+    cursor: pointer;
+    margin-left: 5px;
+    /*margin-right: 5px;*/
+}
+
+.account .account-control .account-edit:hover {
+    /*color: #3f3f3f;*/
+    color: #286090;
+}
+
+.account .account-control .account-upload:hover {
+    /*color: #3f3f3f;*/
+    color: #449d44;
+}
+
+.account .account-control .account-remove:hover {
+    /*color: #3f3f3f;*/
+    color: #ac2925;
+}
+
+.account .account-icon {
+    border-radius: 10px;
+    width: 20px;
+    height: 20px;
+    border: solid 1px grey;
+}
+
+.account-statement-upload {
+    display: none;
+}
+
+#duplicates-container {
+    margin-top: -20px;
+}

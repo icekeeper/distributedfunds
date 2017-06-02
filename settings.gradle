@@ -1,2 +1,4 @@
 rootProject.name = 'birthdayfunds'
 
+include ':core'
+include ':angular-ui'

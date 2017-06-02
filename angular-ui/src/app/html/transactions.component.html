@@ -1,0 +1,91 @@
+<script language="JavaScript">
+
+    function showTransactions() {
+        $('#transactions').html('');
+
+        var from = $('#transactions-from').val();
+        var to = $('#transactions-to').val();
+        var accountIds = $('#account-ids').val();
+
+        var transactions = JSON.parse(endpoint.get("/transactions", [
+            from === '' ? null : '"' + from + '"',
+            to === '' ? null : '"' + to + '"',
+            accountIds === null ? '[]' : '[' + accountIds + ']'
+        ]));
+        if (transactions.length == 0) {
+            showAlert('#period-no-transactions-found', 3000);
+            return;
+        }
+        transactions.forEach(function (transaction) {
+            $('#transactions').append($(templates.applyTemplate('transaction-row.ftl', JSON.stringify(transaction))));
+        });
+    }
+
+    function addZero(i) {
+        return i < 10 ? '0' + i : i;
+    }
+
+    $(document).ready(function () {
+//        var accounts = JSON.parse(endpoint.get('/account', []));
+//        accounts.forEach(function (account) {
+//            $('#account-ids').append('<option value="' + account.id + '">' + account.name + '</option>');
+//        });
+//        $('#show-transactions').click(showTransactions);
+//        var today = new Date();
+//        $('#transactions-from').val('01.' + addZero(today.getMonth() + 1) + '.' + today.getFullYear());
+//        $('#transactions-to').val(addZero(today.getDate()) + '.' + addZero(today.getMonth() + 1) + '.' + today.getFullYear());
+    });
+</script>
+
+<div class="container">
+    <div id="transactions-panel" class="panel panel-default">
+        <div class="panel-heading">
+            <h4>Transactions</h4>
+        </div>
+        <div class="panel-body">
+            <div>
+                <form class="form-inline">
+                    <div class="input-group">
+                        Select period
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <span class="input-group-addon">From</span>
+                            <input #from type="text" class="form-control" id="transactions-from"/>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <span class="input-group-addon">To</span>
+                            <input #to type="text" class="form-control" id="transactions-to"/>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <select #accountIds id="account-ids" class="selectpicker" multiple title="All">
+                            <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button id="show-transactions" class="btn btn-primary" type="button"
+                                (click)="showTransactions(from.value, to.value, accountIds, alert)">Show
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="alerts-container">
+                <alert #alert></alert>
+            </div>
+            <div id="transactions-container">
+                <div id="transactions" class="list-group">
+                    <li *ngFor="let transaction of transactions" class="list-group-item">
+                        <span>{{transaction.date}}</span>&nbsp;
+                        <span>{{transaction.store}}</span>
+                        <span style="float: right">{{transaction.amount}}</span>
+                    </li>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

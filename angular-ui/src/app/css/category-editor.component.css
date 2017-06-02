@@ -1,0 +1,15 @@
+.category-controls i {
+    cursor: pointer;
+}
+
+.category-store-controls i {
+    cursor: pointer;
+}
+
+.modal .alerts .alert {
+    margin-bottom: 0px;
+}
+
+.category-union-modal .category-chooser-container {
+    margin-top: 20px;
+}
