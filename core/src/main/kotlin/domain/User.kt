@@ -1,9 +1,7 @@
 package domain
 
-import java.time.LocalDate
 
-
-class User(val login: String, val name: String, val birthday: LocalDate) {
+class User(val login: String, val name: String) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

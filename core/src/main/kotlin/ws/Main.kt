@@ -46,7 +46,7 @@ fun main(args: Array<String>) {
                         val body = call.request.receive<String>()
                         val createUserRequest = gson.fromJson(body, CreateUserRequestDto::class.java)
 
-                        val userWithId = userOperations.registerUser(createUserRequest.login, createUserRequest.name, createUserRequest.birthday)
+                        val userWithId = userOperations.registerUser(createUserRequest.login, createUserRequest.name)
                         call.respond(userConverter.toDto(userWithId))
                     }
 

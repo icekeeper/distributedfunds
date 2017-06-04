@@ -8,7 +8,6 @@ import org.jetbrains.exposed.dao.LongIdTable
 object Users : LongIdTable() {
     val login = varchar("login", 50).uniqueIndex()
     val name = varchar("name", 100)
-    val birthday = date("birthday").index()
 }
 
 class UserEntity(id: EntityID<Long>) : LongEntity(id) {
@@ -16,7 +15,6 @@ class UserEntity(id: EntityID<Long>) : LongEntity(id) {
 
     var login by Users.login
     var name by Users.name
-    var birthday by Users.birthday
 
 }
 

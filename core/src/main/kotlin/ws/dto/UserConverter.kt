@@ -10,8 +10,7 @@ class UserConverter : DtoConverter<UserDto, User> {
         return UserDto(
                 entity.id,
                 entity.entity.login,
-                entity.entity.name,
-                entity.entity.birthday
+                entity.entity.name
         )
     }
 }

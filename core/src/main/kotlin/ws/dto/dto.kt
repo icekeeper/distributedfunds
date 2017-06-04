@@ -11,8 +11,7 @@ interface DtoConverter<out T : Dto, in U> {
 
 data class UserDto(val id: Long,
                    val login: String,
-                   val name: String,
-                   val birthday: LocalDate) : Dto
+                   val name: String) : Dto
 
 data class CreateUserRequestDto(val login: String,
                                 val name: String,
