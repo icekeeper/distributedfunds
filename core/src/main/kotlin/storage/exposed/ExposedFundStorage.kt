@@ -14,29 +14,26 @@ import storage.model.FundDescription
 
 
 class ExposedFundStorage : FundStorage {
-    override fun linkUser(fundId: Long, userId: Long): Boolean = transaction {
-        val linked = FundsUsers.select { (FundsUsers.fund eq fundId) and (FundsUsers.user eq userId) }.count() == 1
 
-        if (!linked) {
-            FundsUsers.insert {
-                it[fund] = EntityID(fundId, Funds)
-                it[user] = EntityID(userId, Users)
+    override fun linkUsers(fundId: Long, userIds: List<Long>) = transaction {
+        val linked = FundsUsers.select { (FundsUsers.fund eq fundId) and (FundsUsers.user inList userIds) }.map { it[FundsUsers.user] }
+
+        if (!linked.isEmpty()) {
+            val fundEntityId = EntityID(fundId, Funds)
+            linked.forEach {
+                val userEntityId = it
+                FundsUsers.insert {
+                    it[fund] = fundEntityId
+                    it[user] = userEntityId
+                }
             }
         }
-
-        !linked
     }
 
-    override fun unlinkUser(fundId: Long, userId: Long): Boolean = transaction {
-        val linked = FundsUsers.select { (FundsUsers.fund eq fundId) and (FundsUsers.user eq userId) }.count() == 1
-
-        if (linked) {
-            FundsUsers.deleteWhere {
-                (FundsUsers.fund eq fundId) and (FundsUsers.user eq userId)
-            }
+    override fun unlinkUsers(fundId: Long, userIds: List<Long>): Unit = transaction {
+        FundsUsers.deleteWhere {
+            (FundsUsers.fund eq fundId) and (FundsUsers.user inList userIds)
         }
-
-        linked
     }
 
     override fun store(fund: Fund): Long = transaction {

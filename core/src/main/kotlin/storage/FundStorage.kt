@@ -14,9 +14,9 @@ interface FundStorage {
 
     fun get(id: Long): Fund
 
-    fun linkUser(fundId: Long, userId: Long): Boolean
+    fun linkUsers(fundId: Long, userIds: List<Long>)
 
-    fun unlinkUser(fundId: Long, userId: Long): Boolean
+    fun unlinkUsers(fundId: Long, userIds: List<Long>)
 
     fun getSupervisorId(fundId: Long): Long
 

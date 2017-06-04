@@ -20,9 +20,9 @@ interface FundOperations {
 
     fun getSupervisor(fundId: Long): IdEntityHolder<User>
 
-    fun addUser(fundId: Long, userId: Long): Boolean
+    fun addUsers(fundId: Long, userIds: List<Long>)
 
-    fun removeUser(fundId: Long, userId: Long): Boolean
+    fun removeUser(fundId: Long, userIds: List<Long>)
 
     fun getFundUsersWithIds(fundId: Long): List<IdEntityHolder<User>>
 }

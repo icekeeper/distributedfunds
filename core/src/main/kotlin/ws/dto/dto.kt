@@ -29,4 +29,5 @@ data class FundDescriptionDto(val id: Long,
 
 data class CreateFundRequestDto(val name: String,
                                 val description: String,
-                                val supervisorId: Long) : Dto
+                                val supervisorId: Long,
+                                val userIds: List<Long>) : Dto

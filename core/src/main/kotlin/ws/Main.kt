@@ -64,7 +64,9 @@ fun main(args: Array<String>) {
                         val createFundRequest = gson.fromJson(body, CreateFundRequestDto::class.java)
 
                         val fundWithId = fundOperations.createFund(createFundRequest.name, createFundRequest.description, createFundRequest.supervisorId)
-                        call.respond(fundConverter.toDto(fundWithId))
+                        fundOperations.addUsers(fundWithId.id, createFundRequest.userIds)
+
+                        call.respond(fundConverter.toDto(fundOperations.getFund(fundWithId.id)))
                     }
 
                     get("{id}") {
@@ -83,20 +85,15 @@ fun main(args: Array<String>) {
                         val fundId = call.parameters["fundId"]!!.toLong()
                         val userId = call.parameters["userId"]!!.toLong()
 
-                        val added = fundOperations.addUser(fundId, userId)
-
-                        if (added) {
-                            call.response.status(HttpStatusCode.Created)
-                        } else {
-                            call.response.status(HttpStatusCode.OK)
-                        }
+                        fundOperations.addUsers(fundId, listOf(userId))
+                        call.response.status(HttpStatusCode.OK)
                     }
 
                     delete("{fundId}/user/{userId}") {
                         val fundId = call.parameters["fundId"]!!.toLong()
                         val userId = call.parameters["userId"]!!.toLong()
 
-                        fundOperations.removeUser(fundId, userId)
+                        fundOperations.removeUser(fundId, listOf(userId))
                         call.response.status(HttpStatusCode.OK)
                     }
 

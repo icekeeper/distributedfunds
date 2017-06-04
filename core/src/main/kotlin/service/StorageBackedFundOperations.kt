@@ -38,12 +38,12 @@ class StorageBackedFundOperations(val fundStorage: FundStorage, val userStorage:
         return IdEntityHolder(supervisorId, user)
     }
 
-    override fun addUser(fundId: Long, userId: Long): Boolean {
-        return fundStorage.linkUser(fundId, userId)
+    override fun addUsers(fundId: Long, userIds: List<Long>) {
+        fundStorage.linkUsers(fundId, userIds)
     }
 
-    override fun removeUser(fundId: Long, userId: Long): Boolean {
-        return fundStorage.unlinkUser(fundId, userId)
+    override fun removeUser(fundId: Long, userIds: List<Long>) {
+        fundStorage.unlinkUsers(fundId, userIds)
     }
 
     override fun getFundUsersWithIds(fundId: Long): List<IdEntityHolder<User>> {
