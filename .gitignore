@@ -114,3 +114,5 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 .idea
+
+angular-ui/node_modules

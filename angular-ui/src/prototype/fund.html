@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Money Keeper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../lib/bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="../lib/bootstrap/css/awesome-bootstrap-checkbox.css">
+    <link rel="stylesheet" href="../lib/bootstrap/css/bootstrap-datepicker3.min.css">
+    <link rel="stylesheet" href="../lib/bootstrap/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="../lib/bootstrap/css/bootstrap-switch.min.css">
+    <link rel="stylesheet" href="../lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../lib/c3/css/c3.min.css">
+
+    <script language="JavaScript" src="../lib/js/jquery-2.1.4.min.js"></script>
+    <script language="JavaScript" src="../lib/bootstrap/js/bootstrap.min.js"></script>
+    <script language="JavaScript" src="../lib/bootstrap/js/bootstrap-datepicker.min.js"></script>
+    <script language="JavaScript" src="../lib/bootstrap/js/bootstrap-select.min.js"></script>
+    <script language="JavaScript" src="../lib/bootstrap/js/bootstrap-switch.min.js"></script>
+    <script language="JavaScript" src="../lib/c3/js/d3.min.js"></script>
+    <script language="JavaScript" src="../lib/c3/js/c3.min.js"></script>
+
+    <style>
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body style="margin: 0; padding: 0;">
+<div style="background-color: #3c3c3c; color: white; padding: 15px; font-size: x-large">
+    <a style="color: white;" href="index.html">Birthday</a>
+</div>
+<div class="container">
+    <div class="panel panel-default" style="margin-top: 15px;">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                Toloka birthdays fund
+                <div class="pull-right">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                </div>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <h2 style="color: green">
+                +3000 RUB
+            </h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                Expenses
+                                <div class="pull-right">
+                                    <div class="btn btn-xs btn-primary">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </h4>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Total</th>
+                                    <th>You</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Present 1</td>
+                                    <td>5000 RUB</td>
+                                    <td>500 RUB</td>
+                                </tr>
+                                <tr>
+                                    <td>Present 2</td>
+                                    <td>4000 RUB</td>
+                                    <td>400 RUB</td>
+                                </tr>
+                                <tr>
+                                    <td>Present 3</td>
+                                    <td>6000 RUB</td>
+                                    <td>600 RUB</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                Payments
+                                <div class="pull-right">
+                                    <div class="btn btn-xs btn-primary">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                            </h4>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>From</th>
+                                    <th>Amount</th>
+                                    <th></th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Artem</td>
+                                    <td>
+                                        5000 RUB
+                                    </td>
+                                    <td>
+                                    <span style="color: green" class="glyphicon glyphicon-arrow-left"
+                                          aria-hidden="true"></span>
+                                    </td>
+                                    <td>
+                                        <div class="btn btn-xs btn-primary">
+                                            Confirm
+                                            <!--<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>-->
+                                        </div>
+                                        <div class="btn btn-xs btn-default">
+                                            Cancel
+                                            <!--<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>-->
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Artem</td>
+                                    <td>
+                                        5000 RUB
+                                    </td>
+                                    <td>
+                                    <span style="color: red" class="glyphicon glyphicon-arrow-right"
+                                          aria-hidden="true"></span>
+                                    </td>
+                                    <td>
+                                        <span style="color: grey">Pending</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Artem</td>
+                                    <td>
+                                        5000 RUB
+                                    </td>
+                                    <td>
+                                    <span style="color: green" class="glyphicon glyphicon-arrow-left"
+                                          aria-hidden="true"></span>
+                                    </td>
+                                    <td>
+                                        <span style="color: grey">Approved</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Artem</td>
+                                    <td>
+                                        5000 RUB
+                                    </td>
+                                    <td>
+                                    <span style="color: red" class="glyphicon glyphicon-arrow-right"
+                                          aria-hidden="true"></span>
+                                    </td>
+                                    <td>
+                                        <span style="color: grey">Approved</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
