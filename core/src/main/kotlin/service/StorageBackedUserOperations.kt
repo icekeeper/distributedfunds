@@ -1,19 +1,16 @@
 package service
 
-import domain.User
-import storage.IdEntityHolder
-import storage.UserStorage
+import model.User
+import storage.UserRepository
 
-class StorageBackedUserOperations(val userStorage: UserStorage) : UserOperations {
+class StorageBackedUserOperations(val userRepository: UserRepository) : UserOperations {
 
-    override fun registerUser(login: String, name: String): IdEntityHolder<User> {
-        val user = User(login, name)
-        val id = userStorage.store(user)
-        return IdEntityHolder(id, user)
+    override fun registerUser(login: String, name: String): User {
+        return userRepository.create(login, name)
     }
 
-    override fun getUser(id: Long): IdEntityHolder<User> {
-        return IdEntityHolder(id, userStorage.get(id))
+    override fun getUser(id: Long): User {
+        return userRepository.get(id)
     }
 }
 

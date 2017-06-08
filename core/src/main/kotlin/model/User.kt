@@ -1,7 +1,7 @@
-package domain
+package model
 
 
-class User(val login: String, val name: String) {
+class User(val id: Long, val login: String, val name: String) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -9,12 +9,12 @@ class User(val login: String, val name: String) {
 
         other as User
 
-        if (login != other.login) return false
+        if (id != other.id) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return login.hashCode()
+        return id.hashCode()
     }
 }

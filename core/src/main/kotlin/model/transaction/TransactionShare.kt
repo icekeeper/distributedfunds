@@ -1,6 +1,6 @@
-package domain.transaction
+package model.transaction
 
-import domain.User
+import model.User
 
 
 class TransactionShare(val user: User,

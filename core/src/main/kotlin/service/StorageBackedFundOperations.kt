@@ -1,58 +1,50 @@
 package service
 
-import domain.Fund
-import domain.User
-import storage.FundStorage
-import storage.IdEntityHolder
-import storage.UserStorage
-import storage.model.FundDescription
+import model.Fund
+import model.User
+import storage.FundRepository
+import storage.UserRepository
 
 
-class StorageBackedFundOperations(val fundStorage: FundStorage, val userStorage: UserStorage) : FundOperations {
+class StorageBackedFundOperations(val fundRepository: FundRepository, val userRepository: UserRepository) : FundOperations {
 
-    override fun getFund(fundId: Long): IdEntityHolder<Fund> {
-        val fund = fundStorage.get(fundId)
-        return IdEntityHolder(fundId, fund)
+    override fun getFund(fundId: Long): Fund {
+        return fundRepository.get(fundId)
     }
 
-    override fun createFund(name: String, description: String, creatorUserId: Long): IdEntityHolder<Fund> {
-        val supervisor = userStorage.get(creatorUserId)
-        val fund = Fund(name, description, supervisor)
-        val id = fundStorage.store(fund)
-        return IdEntityHolder(id, fund)
+    override fun createFund(name: String, description: String, creatorUserId: Long): Fund {
+        val supervisor = userRepository.get(creatorUserId)
+        return fundRepository.create(name, description, supervisor)
     }
 
-    override fun renameFund(fundId: Long, name: String): IdEntityHolder<Fund> {
-        val fund = fundStorage.updateName(fundId, name)
-        return IdEntityHolder(fundId, fund)
+    override fun renameFund(fundId: Long, name: String): Fund {
+        val fund = fundRepository.get(fundId)
+        return fundRepository.updateName(fund, name)
     }
 
-    override fun changeDescription(fundId: Long, description: String): IdEntityHolder<Fund> {
-        val fund = fundStorage.updateDescription(fundId, description)
-        return IdEntityHolder(fundId, fund)
-    }
-
-    override fun getSupervisor(fundId: Long): IdEntityHolder<User> {
-        val supervisorId = fundStorage.getSupervisorId(fundId)
-        val user = userStorage.get(supervisorId)
-        return IdEntityHolder(supervisorId, user)
+    override fun changeDescription(fundId: Long, description: String): Fund {
+        val fund = fundRepository.get(fundId)
+        return fundRepository.updateDescription(fund, description)
     }
 
     override fun addUsers(fundId: Long, userIds: List<Long>) {
-        fundStorage.linkUsers(fundId, userIds)
+        val fund = fundRepository.get(fundId)
+        val users = userRepository.get(userIds)
+        fundRepository.linkUsers(fund, users)
     }
 
     override fun removeUser(fundId: Long, userIds: List<Long>) {
-        fundStorage.unlinkUsers(fundId, userIds)
+        val fund = fundRepository.get(fundId)
+        val users = userRepository.get(userIds)
+        fundRepository.unlinkUsers(fund, users)
     }
 
-    override fun getFundUsersWithIds(fundId: Long): List<IdEntityHolder<User>> {
-        val userIds = fundStorage.getLinkedUserIds(fundId)
-        val users = userStorage.get(userIds)
-        return userIds.zip(users).map { IdEntityHolder(it.first, it.second) }
+    override fun getFundUsers(fundId: Long): List<User> {
+        val fund = fundRepository.get(fundId)
+        return fundRepository.getLinkedUsers(fund)
     }
 
-    override fun getDescriptions(): List<IdEntityHolder<FundDescription>> {
-        return fundStorage.getFundDescriptions().sortedBy { it.id }
+    override fun getFunds(): List<Fund> {
+        return fundRepository.getAll()
     }
 }

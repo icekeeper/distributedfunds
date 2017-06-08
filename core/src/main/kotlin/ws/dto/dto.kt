@@ -1,13 +1,8 @@
 package ws.dto
 
-import storage.IdEntityHolder
 import java.time.LocalDate
 
 interface Dto
-
-interface DtoConverter<out T : Dto, in U> {
-    fun toDto(entity: IdEntityHolder<U>): T
-}
 
 data class UserDto(val id: Long,
                    val login: String,

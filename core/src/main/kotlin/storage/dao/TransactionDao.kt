@@ -1,6 +1,6 @@
 package storage.dao
 
-import domain.transaction.TransactionStatus
+import model.transaction.TransactionStatus
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass

@@ -1,10 +1,11 @@
-package domain.transaction
+package model.transaction
 
-import domain.Fund
+import model.Fund
 import java.time.Instant
 
 
-class Transaction(val fund: Fund,
+class Transaction(val id: Long,
+                  val fund: Fund,
                   val amount: Int,
                   val shares: List<TransactionShare>,
                   var description: String,

@@ -1,4 +1,4 @@
-package domain.transaction
+package model.transaction
 
 enum class TransactionStatus {
     PENDING, CONFIRMED, CANCELLED

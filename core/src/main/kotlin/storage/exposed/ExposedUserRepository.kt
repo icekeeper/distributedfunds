@@ -1,24 +1,25 @@
 package storage.exposed
 
-import domain.User
+import model.User
 import org.jetbrains.exposed.sql.transactions.transaction
-import storage.UserStorage
+import storage.UserRepository
 import storage.dao.UserEntity
 
-class ExposedUserStorage : UserStorage {
+class ExposedUserRepository : UserRepository {
 
     companion object {
         fun userFromEntity(entity: UserEntity): User {
-            return User(entity.login, entity.name)
+            return User(entity.id.value, entity.login, entity.name)
         }
     }
 
-    override fun store(user: User): Long {
+    override fun create(login: String, name: String): User {
         return transaction {
-            UserEntity.new {
-                this.login = user.login
-                this.name = user.name
-            }.id.value
+            val entity = UserEntity.new {
+                this.login = login
+                this.name = name
+            }
+            userFromEntity(entity)
         }
     }
 
