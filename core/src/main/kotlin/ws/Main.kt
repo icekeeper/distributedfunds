@@ -11,8 +11,8 @@ import org.jetbrains.ktor.logging.CallLogging
 import org.jetbrains.ktor.routing.route
 import org.jetbrains.ktor.routing.routing
 import org.jetbrains.ktor.transform.transform
-import service.StorageBackedFundOperations
-import service.StorageBackedUserOperations
+import service.impl.StorageBackedFundOperations
+import service.impl.StorageBackedUserOperations
 import storage.dao.initDao
 import storage.exposed.ExposedFundRepository
 import storage.exposed.ExposedUserRepository

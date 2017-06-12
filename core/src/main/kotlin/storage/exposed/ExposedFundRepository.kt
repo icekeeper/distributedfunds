@@ -15,6 +15,10 @@ import storage.dao.*
 class ExposedFundRepository : FundRepository {
 
     companion object {
+        fun fundFromEntity(entity: FundEntity): Fund {
+            return fundFromEntity(entity, UserEntity[entity.supervisor])
+        }
+
         fun fundFromEntity(entity: FundEntity, supervisorEntity: UserEntity): Fund {
             val supervisor = ExposedUserRepository.userFromEntity(supervisorEntity)
             return Fund(entity.id.value, entity.name, entity.description, supervisor)
