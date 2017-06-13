@@ -82,12 +82,13 @@ class ExposedTransactionRepository : TransactionRepository {
                 .count()
     }
 
-    override fun getUserTransactions(fund: Fund, user: User, limit: Int, offset: Int): List<Transaction> = transaction {
+    override fun getUserTransactions(fund: Fund, user: User, fromTransactionId: Long, limit: Int): List<Transaction> = transaction {
         val transactionEntityIds = Transactions
                 .innerJoin(TransactionShares.source)
-                .select { (TransactionShares.user eq user.id) and (Transactions.fund eq fund.id) }
-                .orderBy(Transactions.id)
-                .limit(limit, offset = offset)
+                .slice(Transactions.id)
+                .select { (TransactionShares.user eq user.id) and (Transactions.fund eq fund.id) and (Transactions.id lessEq fromTransactionId) }
+                .orderBy(Transactions.id, isAsc = false)
+                .limit(limit)
                 .map { it[Transactions.id] }
 
 
@@ -115,7 +116,7 @@ class ExposedTransactionRepository : TransactionRepository {
                     transactionEntity.description,
                     Instant.ofEpochMilli(transactionEntity.timestamp.millis),
                     transactionEntity.status)
-        }
+        }.sortedByDescending { it.id }
 
 
     }

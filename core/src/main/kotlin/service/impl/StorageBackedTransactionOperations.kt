@@ -32,10 +32,10 @@ class StorageBackedTransactionOperations(val userRepository: UserRepository,
         return transactionRepository.getUserTransactionsCount(fund, user)
     }
 
-    override fun getUserTransactions(fundId: Long, userId: Long, from: Int, to: Int): List<Transaction> {
+    override fun getUserTransactions(fundId: Long, userId: Long, fromTransactionId: Long, limit: Int): List<Transaction> {
         val fund = fundRepository.get(fundId)
         val user = userRepository.get(userId)
 
-        return transactionRepository.getUserTransactions(fund, user, from, to)
+        return transactionRepository.getUserTransactions(fund, user, fromTransactionId, limit)
     }
 }

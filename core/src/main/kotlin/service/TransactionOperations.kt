@@ -15,8 +15,8 @@ interface TransactionOperations {
 
     fun getUserTransactions(fundId: Long,
                             userId: Long,
-                            from: Int,
-                            to: Int): List<Transaction>
+                            fromTransactionId: Long,
+                            limit: Int): List<Transaction>
 
 
 }

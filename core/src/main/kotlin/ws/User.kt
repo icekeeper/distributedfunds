@@ -9,8 +9,6 @@ import org.jetbrains.ktor.routing.get
 import org.jetbrains.ktor.routing.post
 import org.jetbrains.ktor.routing.route
 import service.UserOperations
-import ws.dto.CreateUserRequestDto
-import ws.dto.UserDto
 
 fun Route.user(gson: Gson, userOperations: UserOperations) {
 

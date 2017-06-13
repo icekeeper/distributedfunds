@@ -7,9 +7,6 @@ import org.jetbrains.ktor.application.receive
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.routing.*
 import service.FundOperations
-import ws.dto.CreateFundRequestDto
-import ws.dto.FundDescriptionDto
-import ws.dto.FundDto
 
 fun Route.fund(gson: Gson, fundOperations: FundOperations) {
 

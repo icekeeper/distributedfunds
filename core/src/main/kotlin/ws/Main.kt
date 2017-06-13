@@ -12,21 +12,25 @@ import org.jetbrains.ktor.routing.route
 import org.jetbrains.ktor.routing.routing
 import org.jetbrains.ktor.transform.transform
 import service.impl.StorageBackedFundOperations
+import service.impl.StorageBackedTransactionOperations
 import service.impl.StorageBackedUserOperations
 import storage.dao.initDao
 import storage.exposed.ExposedFundRepository
+import storage.exposed.ExposedTransactionRepository
 import storage.exposed.ExposedUserRepository
-import ws.dto.Dto
 
 
 fun main(args: Array<String>) {
     initDao()
 
-    val userStorage = ExposedUserRepository()
-    val userOperations = StorageBackedUserOperations(userStorage)
+    val userRepository = ExposedUserRepository()
+    val userOperations = StorageBackedUserOperations(userRepository)
 
-    val fundStorage = ExposedFundRepository()
-    val fundOperations = StorageBackedFundOperations(fundStorage, userStorage)
+    val fundRepository = ExposedFundRepository()
+    val fundOperations = StorageBackedFundOperations(fundRepository, userRepository)
+
+    val transactionRepository = ExposedTransactionRepository()
+    val transactionOperations = StorageBackedTransactionOperations(userRepository, fundRepository, transactionRepository)
 
     val gson = GsonBuilder().setPrettyPrinting().create()
 
@@ -38,7 +42,7 @@ fun main(args: Array<String>) {
 
                 user(gson, userOperations)
                 fund(gson, fundOperations)
-
+                transaction(gson, transactionOperations)
             }
         }
 
