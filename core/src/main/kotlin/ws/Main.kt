@@ -10,7 +10,12 @@ import org.jetbrains.ktor.jetty.Jetty
 import org.jetbrains.ktor.logging.CallLogging
 import org.jetbrains.ktor.routing.route
 import org.jetbrains.ktor.routing.routing
+import org.jetbrains.ktor.sessions.SessionCookieTransformerMessageAuthentication
+import org.jetbrains.ktor.sessions.SessionCookiesSettings
+import org.jetbrains.ktor.sessions.withCookieByValue
+import org.jetbrains.ktor.sessions.withSessions
 import org.jetbrains.ktor.transform.transform
+import org.jetbrains.ktor.util.hex
 import service.impl.StorageBackedFundOperations
 import service.impl.StorageBackedTransactionOperations
 import service.impl.StorageBackedUserOperations
@@ -19,6 +24,7 @@ import storage.exposed.ExposedFundRepository
 import storage.exposed.ExposedTransactionRepository
 import storage.exposed.ExposedUserRepository
 
+data class Session(val userId: Long)
 
 fun main(args: Array<String>) {
     initDao()
@@ -38,8 +44,16 @@ fun main(args: Array<String>) {
         routing {
             install(CallLogging)
 
-            route("/api/front") {
+            val hashKey = hex("4819b57c323945c12a85452f6239")
 
+            withSessions<Session> {
+                withCookieByValue {
+                    settings = SessionCookiesSettings(transformers = listOf(SessionCookieTransformerMessageAuthentication(hashKey)))
+                }
+            }
+
+            route("/api/front") {
+                login(userOperations)
                 user(gson, userOperations)
                 fund(gson, fundOperations)
                 transaction(gson, transactionOperations)
