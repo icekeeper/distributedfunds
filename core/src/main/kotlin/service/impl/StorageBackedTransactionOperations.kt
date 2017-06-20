@@ -14,7 +14,11 @@ class StorageBackedTransactionOperations(val userRepository: UserRepository,
                                          val fundRepository: FundRepository,
                                          val transactionRepository: TransactionRepository) : TransactionOperations {
 
-    override fun createTransaction(fundId: Long, amount: Int, description: String, userAmountPairs: List<Pair<Long, Int>>): Transaction {
+    override fun createTransaction(fundId: Long,
+                                   amount: Int,
+                                   description: String,
+                                   userAmountPairs: List<Pair<Long, Int>>,
+                                   status: TransactionStatus): Transaction {
         val fund = fundRepository.get(fundId)
         val users = userRepository.get(userAmountPairs.map { it.first })
         val shares = userAmountPairs.map { (userId, amount) ->
@@ -22,7 +26,7 @@ class StorageBackedTransactionOperations(val userRepository: UserRepository,
             TransactionShare(user, amount)
         }
 
-        return transactionRepository.createTransaction(fund, amount, description, shares, TransactionStatus.PENDING, Instant.now())
+        return transactionRepository.createTransaction(fund, amount, description, shares, status, Instant.now())
     }
 
     override fun getUserTransactionsCount(fundId: Long, userId: Long): Int {
