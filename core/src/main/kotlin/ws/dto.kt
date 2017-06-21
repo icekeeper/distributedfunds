@@ -4,6 +4,8 @@ import model.transaction.TransactionStatus
 
 interface Dto
 
+data class DtoCollection(val collection: Iterable<Dto>)
+
 data class UserDto(val id: Long,
                    val login: String,
                    val name: String) : Dto

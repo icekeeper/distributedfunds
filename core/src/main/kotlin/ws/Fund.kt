@@ -26,7 +26,7 @@ fun Route.fund(fundOperations: FundOperations) {
         get {
             val funds = fundOperations.getFunds()
             val dtos = funds.map { fundToDescriptionDto(it) }
-            call.respond(dtos)
+            call.respond(DtoCollection(dtos))
         }
 
         put("{fundId}/user/{userId}") {
@@ -49,7 +49,7 @@ fun Route.fund(fundOperations: FundOperations) {
             val id = call.parameters["id"]!!.toLong()
             val fundUsersWithIds = fundOperations.getFundUsers(id)
 
-            call.respond(fundUsersWithIds.map { userToDto(it) })
+            call.respond(DtoCollection(fundUsersWithIds.map { userToDto(it) }))
         }
 
         get("{fundId}/user/{userId}/balance") {
