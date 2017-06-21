@@ -1,24 +1,20 @@
 package ws
 
-import com.google.gson.Gson
 import model.transaction.Transaction
 import org.jetbrains.ktor.application.call
-import org.jetbrains.ktor.application.receive
 import org.jetbrains.ktor.routing.*
 import service.TransactionOperations
+import ws.util.post
 
-fun Route.transaction(gson: Gson, transactionOperations: TransactionOperations) {
+fun Route.transaction(transactionOperations: TransactionOperations) {
 
     route("fund/{fundId}/transaction") {
-        post {
-            val body = call.request.receive<String>()
-            val createTransactionRequest = gson.fromJson(body, CreateTransactionRequestDto::class.java)
-
+        post<CreateTransactionRequestDto> { (fundId, amount, description, shares) ->
             val transaction = transactionOperations.createTransaction(
-                    createTransactionRequest.fundId,
-                    createTransactionRequest.amount,
-                    createTransactionRequest.description,
-                    createTransactionRequest.shares.map { Pair(it.userId, it.amount) })
+                    fundId,
+                    amount,
+                    description,
+                    shares.map { Pair(it.userId, it.amount) })
 
             call.respond(transactionToDto(transaction))
         }

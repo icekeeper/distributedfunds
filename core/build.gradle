@@ -17,6 +17,7 @@ buildscript {
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'idea'
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
@@ -28,6 +29,12 @@ kotlin {
     }
 }
 
+idea {
+    module {
+        downloadSources = true
+    }
+}
+
 dependencies {
 
     def ktorVersion = '0.3.2'
@@ -35,6 +42,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile "org.jetbrains.ktor:ktor-core:$ktorVersion"
     compile "org.jetbrains.ktor:ktor-jetty:$ktorVersion"
+    compile "org.jetbrains.ktor:ktor-locations:$ktorVersion"
     compile 'org.jetbrains.exposed:exposed:0.8'
 
     compile group: 'com.h2database', name: 'h2', version: '1.4.195'

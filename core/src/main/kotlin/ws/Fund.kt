@@ -1,22 +1,18 @@
 package ws
 
-import com.google.gson.Gson
 import model.Fund
 import org.jetbrains.ktor.application.call
-import org.jetbrains.ktor.application.receive
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.routing.*
 import service.FundOperations
+import ws.util.post
 
-fun Route.fund(gson: Gson, fundOperations: FundOperations) {
+fun Route.fund(fundOperations: FundOperations) {
 
     route("fund") {
-        post {
-            val body = call.request.receive<String>()
-            val createFundRequest = gson.fromJson(body, CreateFundRequestDto::class.java)
-
-            val fund = fundOperations.createFund(createFundRequest.name, createFundRequest.description, createFundRequest.supervisorId)
-            fundOperations.addUsers(fund.id, createFundRequest.userIds)
+        post<CreateFundRequestDto> { (name, description, supervisorId, userIds) ->
+            val fund = fundOperations.createFund(name, description, supervisorId)
+            fundOperations.addUsers(fund.id, userIds)
 
             call.respond(fundToFundDto(fund, fundOperations))
         }

@@ -1,7 +1,6 @@
 package ws
 
 import model.transaction.TransactionStatus
-import java.time.LocalDate
 
 interface Dto
 
@@ -10,8 +9,7 @@ data class UserDto(val id: Long,
                    val name: String) : Dto
 
 data class CreateUserRequestDto(val login: String,
-                                val name: String,
-                                val birthday: LocalDate) : Dto
+                                val name: String) : Dto
 
 data class FundDto(val id: Long,
                    val name: String,

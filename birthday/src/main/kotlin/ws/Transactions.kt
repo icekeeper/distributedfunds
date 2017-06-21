@@ -1,50 +1,32 @@
 package ws
 
-import com.google.gson.Gson
 import org.jetbrains.ktor.application.call
-import org.jetbrains.ktor.application.receive
-import org.jetbrains.ktor.routing.*
+import org.jetbrains.ktor.routing.Route
+import org.jetbrains.ktor.routing.get
+import org.jetbrains.ktor.routing.optionalParam
+import org.jetbrains.ktor.routing.route
 import org.jetbrains.ktor.sessions.sessionOrNull
 import service.BirthdayTransactionOperations
+import ws.util.post
 
-fun Route.birthdayTransaction(gson: Gson,
-                              transactionOperations: BirthdayTransactionOperations) {
+fun Route.birthdayTransaction(transactionOperations: BirthdayTransactionOperations) {
 
     route("fund/{fundId}/transaction") {
         authorized {
-
-            post("redistribution") {
+            post<CreateRedistributionTransactionRequest>("redistribution") { (fundId, toUserId, description, amount) ->
                 val session = call.sessionOrNull<Session>()!!
                 val userId = session.userId
 
-                val body = call.request.receive<String>()
-                val createTransactionRequest = gson.fromJson(body, CreateRedistributionTransactionRequest::class.java)
-
-                val transaction = transactionOperations.createRedistributionTransaction(
-                        createTransactionRequest.fundId,
-                        userId,
-                        createTransactionRequest.toUserId,
-                        createTransactionRequest.description,
-                        createTransactionRequest.amount
-                )
+                val transaction = transactionOperations.createRedistributionTransaction(fundId, userId, toUserId, description, amount)
 
                 call.respond(transactionToDto(transaction))
             }
 
-            post("gift") {
+            post<CreateGiftTransactionRequest>("gift") { (fundId, receiverId, description, price) ->
                 val session = call.sessionOrNull<Session>()!!
                 val userId = session.userId
 
-                val body = call.request.receive<String>()
-                val createTransactionRequest = gson.fromJson(body, CreateGiftTransactionRequest::class.java)
-
-                val transaction = transactionOperations.createGiftTransaction(
-                        createTransactionRequest.fundId,
-                        userId,
-                        createTransactionRequest.receiverId,
-                        createTransactionRequest.description,
-                        createTransactionRequest.price
-                )
+                val transaction = transactionOperations.createGiftTransaction(fundId, userId, receiverId, description, price)
 
                 call.respond(transactionToDto(transaction))
             }

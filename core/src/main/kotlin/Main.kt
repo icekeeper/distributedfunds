@@ -1,4 +1,4 @@
-import com.google.gson.GsonBuilder
+import com.google.gson.Gson
 import org.jetbrains.ktor.application.install
 import org.jetbrains.ktor.content.TextContent
 import org.jetbrains.ktor.host.embeddedServer
@@ -22,6 +22,7 @@ import storage.exposed.ExposedFundRepository
 import storage.exposed.ExposedTransactionRepository
 import storage.exposed.ExposedUserRepository
 import ws.*
+import ws.util.GsonDtoParser
 
 fun main(args: Array<String>) {
     initDao()
@@ -35,11 +36,12 @@ fun main(args: Array<String>) {
     val fundOperations = StorageBackedFundOperations(fundRepository, userRepository, transactionRepository)
     val transactionOperations = StorageBackedTransactionOperations(userRepository, fundRepository, transactionRepository)
 
-    val gson = GsonBuilder().setPrettyPrinting().create()
+    val gson = Gson()
 
     val server = embeddedServer(Jetty, 8080) {
         routing {
             install(CallLogging)
+            install(GsonDtoParser)
 
             val hashKey = hex("4819b57c323945c12a85452f6239")
 
@@ -51,9 +53,9 @@ fun main(args: Array<String>) {
 
             route("/api/front") {
                 login(userOperations)
-                user(gson, userOperations)
-                fund(gson, fundOperations)
-                transaction(gson, transactionOperations)
+                user(userOperations)
+                fund(fundOperations)
+                transaction(transactionOperations)
             }
         }
 
