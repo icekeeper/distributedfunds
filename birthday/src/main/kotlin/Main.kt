@@ -19,6 +19,7 @@ import storage.dao.initDao
 import storage.exposed.ExposedFundRepository
 import storage.exposed.ExposedTransactionRepository
 import storage.exposed.ExposedUserRepository
+import ws.routing.*
 import ws.util.GsonDtoProcessor
 
 fun main(args: Array<String>) {

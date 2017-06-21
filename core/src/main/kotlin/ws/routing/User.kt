@@ -1,4 +1,4 @@
-package ws
+package ws.routing
 
 import model.User
 import org.jetbrains.ktor.application.call
@@ -6,6 +6,8 @@ import org.jetbrains.ktor.routing.Route
 import org.jetbrains.ktor.routing.get
 import org.jetbrains.ktor.routing.route
 import service.UserOperations
+import ws.CreateUserRequestDto
+import ws.UserDto
 import ws.util.post
 
 fun Route.user(userOperations: UserOperations) {

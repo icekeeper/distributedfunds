@@ -1,10 +1,11 @@
-package ws
+package ws.routing
 
 import model.Fund
 import org.jetbrains.ktor.application.call
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.routing.*
 import service.FundOperations
+import ws.*
 import ws.util.post
 
 fun Route.fund(fundOperations: FundOperations) {

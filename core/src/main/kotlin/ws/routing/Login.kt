@@ -1,4 +1,4 @@
-package ws
+package ws.routing
 
 import org.jetbrains.ktor.application.ApplicationCallPipeline
 import org.jetbrains.ktor.application.call
