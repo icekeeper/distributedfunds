@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import org.jetbrains.ktor.application.*
 import org.jetbrains.ktor.http.HttpMethod
 import org.jetbrains.ktor.pipeline.PipelineContext
+import org.jetbrains.ktor.request.contentCharset
 import org.jetbrains.ktor.routing.Route
 import org.jetbrains.ktor.routing.application
 import org.jetbrains.ktor.routing.method
@@ -12,6 +13,7 @@ import org.jetbrains.ktor.util.AttributeKey
 import ws.Dto
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.nio.charset.Charset
 
 
 class GsonDtoParser(val gson: Gson) {
@@ -23,8 +25,8 @@ class GsonDtoParser(val gson: Gson) {
         }
     }
 
-    fun <T : Dto> parse(inputStream: InputStream, clazz: Class<T>): T {
-        val reader = InputStreamReader(inputStream, Charsets.UTF_8)
+    fun <T : Dto> parse(inputStream: InputStream, clazz: Class<T>, charset: Charset?): T {
+        val reader = InputStreamReader(inputStream, charset ?: Charsets.UTF_8)
         return gson.fromJson<T>(reader, clazz)
     }
 
@@ -32,23 +34,22 @@ class GsonDtoParser(val gson: Gson) {
 
 inline fun <reified T : Dto> Route.post(noinline body: suspend PipelineContext<ApplicationCall>.(T) -> Unit): Route {
     return method(HttpMethod.Post) {
-        handle {
-            val dtoParser = application.feature(GsonDtoParser)
-            val inputStream = call.request.receive<InputStream>()
-            val value = dtoParser.parse(inputStream, T::class.java)
-            body(this, value)
-        }
+        handle(body)
     }
 }
 
 inline fun <reified T : Dto> Route.post(path: String, noinline body: suspend PipelineContext<ApplicationCall>.(T) -> Unit): Route {
     return route(HttpMethod.Post, path) {
-        handle {
-            val dtoParser = application.feature(GsonDtoParser)
-            val inputStream = call.request.receive<InputStream>()
-            val value = dtoParser.parse(inputStream, T::class.java)
-            body(this, value)
-        }
+        handle(body)
+    }
+}
+
+inline fun <reified T : Dto> Route.handle(noinline body: suspend PipelineContext<ApplicationCall>.(T) -> Unit) {
+    handle {
+        val dtoParser = application.feature(GsonDtoParser)
+        val inputStream = call.request.receive<InputStream>()
+        val value = dtoParser.parse(inputStream, T::class.java, call.request.contentCharset())
+        body(this, value)
     }
 }
 
