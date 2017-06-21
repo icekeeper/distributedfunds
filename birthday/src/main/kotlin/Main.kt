@@ -29,12 +29,11 @@ fun main(args: Array<String>) {
     initDao()
 
     val userRepository = ExposedUserRepository()
-    val userOperations = StorageBackedUserOperations(userRepository)
-
     val fundRepository = ExposedFundRepository()
-    val fundOperations = StorageBackedFundOperations(fundRepository, userRepository)
-
     val transactionRepository = ExposedTransactionRepository()
+
+    val userOperations = StorageBackedUserOperations(userRepository)
+    val fundOperations = StorageBackedFundOperations(fundRepository, userRepository, transactionRepository)
     val transactionOperations = StorageBackedTransactionOperations(userRepository, fundRepository, transactionRepository)
 
     val birthdayTransactionOperations = CoreBasedBirthdayTransactionOperations(transactionOperations, fundOperations)

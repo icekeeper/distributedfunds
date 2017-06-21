@@ -8,6 +8,8 @@ import org.jetbrains.ktor.sessions.session
 import org.jetbrains.ktor.sessions.sessionOrNull
 import service.UserOperations
 
+data class Session(val userId: Long)
+
 fun Route.login(userOperations: UserOperations) {
 
     route("login") {

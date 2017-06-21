@@ -8,6 +8,7 @@ import model.transaction.TransactionStatus
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.sum
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 import storage.TransactionRepository
@@ -117,7 +118,14 @@ class ExposedTransactionRepository : TransactionRepository {
                     Instant.ofEpochMilli(transactionEntity.timestamp.millis),
                     transactionEntity.status)
         }.sortedByDescending { it.id }
+    }
 
-
+    override fun getUserBalance(fund: Fund, user: User): Int = transaction {
+        Transactions.innerJoin(TransactionShares.source)
+                .slice(TransactionShares.user, TransactionShares.amount.sum())
+                .select { (TransactionShares.user eq user.id) and (Transactions.fund eq fund.id) }
+                .groupBy(TransactionShares.user)
+                .firstOrNull()
+                ?.let { it[TransactionShares.amount.sum()] } ?: 0
     }
 }

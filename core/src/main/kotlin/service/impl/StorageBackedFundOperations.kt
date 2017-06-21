@@ -1,7 +1,13 @@
 package service.impl
 
+import storage.FundRepository
+import storage.TransactionRepository
+import storage.UserRepository
 
-class StorageBackedFundOperations(val fundRepository: storage.FundRepository, val userRepository: storage.UserRepository) : service.FundOperations {
+
+class StorageBackedFundOperations(val fundRepository: FundRepository,
+                                  val userRepository: UserRepository,
+                                  val transactionRepository: TransactionRepository) : service.FundOperations {
 
     override fun getFund(fundId: Long): model.Fund {
         return fundRepository.get(fundId)
@@ -41,5 +47,11 @@ class StorageBackedFundOperations(val fundRepository: storage.FundRepository, va
 
     override fun getFunds(): List<model.Fund> {
         return fundRepository.getAll()
+    }
+
+    override fun getFundUserBalance(fundId: Long, userId: Long): Int {
+        val fund = fundRepository.get(fundId)
+        val user = userRepository.get(userId)
+        return transactionRepository.getUserBalance(fund, user)
     }
 }

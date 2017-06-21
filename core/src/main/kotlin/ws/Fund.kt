@@ -55,6 +55,15 @@ fun Route.fund(gson: Gson, fundOperations: FundOperations) {
 
             call.respond(fundUsersWithIds.map { userToDto(it) })
         }
+
+        get("{fundId}/user/{userId}/balance") {
+            val fundId = call.parameters["fundId"]!!.toLong()
+            val userId = call.parameters["userId"]!!.toLong()
+
+            val balance = fundOperations.getFundUserBalance(fundId, userId)
+
+            call.respond(FundUserBalanceDto(fundId, userId, balance))
+        }
     }
 }
 

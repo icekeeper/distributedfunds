@@ -22,4 +22,6 @@ interface TransactionRepository {
     fun getUserTransactionsCount(fund: Fund, user: User): Int
 
     fun getUserTransactions(fund: Fund, user: User, fromTransactionId: Long, limit: Int): List<Transaction>
+
+    fun getUserBalance(fund: Fund, user: User): Int
 }

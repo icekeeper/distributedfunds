@@ -1,5 +1,3 @@
-package ws
-
 import com.google.gson.GsonBuilder
 import org.jetbrains.ktor.application.install
 import org.jetbrains.ktor.content.TextContent
@@ -23,19 +21,18 @@ import storage.dao.initDao
 import storage.exposed.ExposedFundRepository
 import storage.exposed.ExposedTransactionRepository
 import storage.exposed.ExposedUserRepository
-
-data class Session(val userId: Long)
+import ws.*
 
 fun main(args: Array<String>) {
     initDao()
 
     val userRepository = ExposedUserRepository()
-    val userOperations = StorageBackedUserOperations(userRepository)
-
     val fundRepository = ExposedFundRepository()
-    val fundOperations = StorageBackedFundOperations(fundRepository, userRepository)
-
     val transactionRepository = ExposedTransactionRepository()
+
+
+    val userOperations = StorageBackedUserOperations(userRepository)
+    val fundOperations = StorageBackedFundOperations(fundRepository, userRepository, transactionRepository)
     val transactionOperations = StorageBackedTransactionOperations(userRepository, fundRepository, transactionRepository)
 
     val gson = GsonBuilder().setPrettyPrinting().create()

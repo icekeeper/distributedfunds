@@ -51,3 +51,7 @@ data class CreateTransactionRequestDto(val fundId: Long,
                                        val amount: Int,
                                        val description: String,
                                        val shares: List<CreateTransactionShareDto>) : Dto
+
+data class FundUserBalanceDto(val fundId: Long,
+                              val userId: Long,
+                              val balance: Int) : Dto

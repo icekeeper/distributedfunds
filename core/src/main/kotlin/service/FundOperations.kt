@@ -21,5 +21,7 @@ interface FundOperations {
     fun removeUser(fundId: Long, userIds: List<Long>)
 
     fun getFundUsers(fundId: Long): List<User>
+
+    fun getFundUserBalance(fundId: Long, userId: Long): Int
 }
 
