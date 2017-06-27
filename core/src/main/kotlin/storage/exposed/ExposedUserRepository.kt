@@ -23,10 +23,9 @@ class ExposedUserRepository : UserRepository {
         }
     }
 
-    override fun get(id: Long): User {
+    override fun get(id: Long): User? {
         return transaction {
-            val entity = UserEntity[id]
-            userFromEntity(entity)
+            UserEntity.findById(id)?.let { userFromEntity(it) }
         }
     }
 

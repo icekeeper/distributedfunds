@@ -10,7 +10,7 @@ import java.time.Instant
 
 interface TransactionRepository {
 
-    fun get(id: Long): Transaction
+    fun get(id: Long): Transaction?
 
     fun createTransaction(fund: Fund,
                           amount: Int,

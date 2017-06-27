@@ -42,7 +42,17 @@ class ExposedFundRepository : FundRepository {
         fundEntities.map { fundFromEntity(it, supervisorEntitiesById[it.supervisor.value]!!) }
     }
 
-    override fun get(id: Long): Fund = transaction {
+    override fun get(id: Long): Fund? = transaction {
+        val fundEntity = FundEntity.findById(id)
+        if (fundEntity != null) {
+            val supervisorEntity = UserEntity[fundEntity.supervisor]
+            fundFromEntity(fundEntity, supervisorEntity)
+        } else {
+            null
+        }
+    }
+
+    private fun getExisting(id: Long): Fund = transaction {
         val fundEntity = FundEntity[id]
         val supervisorEntity = UserEntity[fundEntity.supervisor]
         fundFromEntity(fundEntity, supervisorEntity)
@@ -51,13 +61,13 @@ class ExposedFundRepository : FundRepository {
     override fun updateName(fund: Fund, name: String): Fund = transaction {
         val fundEntity = FundEntity[fund.id]
         fundEntity.name = name
-        get(fund.id)
+        getExisting(fund.id)
     }
 
     override fun updateDescription(fund: Fund, description: String): Fund = transaction {
         val fundEntity = FundEntity[fund.id]
         fundEntity.description = description
-        get(fund.id)
+        getExisting(fund.id)
     }
 
     override fun linkUsers(fund: Fund, users: List<User>) = transaction {

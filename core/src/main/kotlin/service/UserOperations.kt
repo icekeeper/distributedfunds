@@ -6,5 +6,5 @@ interface UserOperations {
 
     fun registerUser(login: String, name: String): User
 
-    fun getUser(id: Long): User
+    fun getUser(userId: Long): User
 }

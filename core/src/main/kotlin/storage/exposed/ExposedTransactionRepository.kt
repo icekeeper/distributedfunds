@@ -19,34 +19,38 @@ import java.time.Instant
 class ExposedTransactionRepository : TransactionRepository {
 
 
-    override fun get(id: Long): Transaction = transaction {
-        val transactionEntity = TransactionEntity[id]
-        val fundEntity = transactionEntity.fund
+    override fun get(id: Long): Transaction? = transaction {
+        val transactionEntity = TransactionEntity.findById(id)
 
-        val sharesData = TransactionShares.select { TransactionShares.transaction eq transactionEntity.id }.map {
-            val user = it[TransactionShares.user].value
-            val amount = it[TransactionShares.amount]
-            Pair(user, amount)
+        if (transactionEntity != null) {
+            val fundEntity = transactionEntity.fund
+
+            val sharesData = TransactionShares.select { TransactionShares.transaction eq transactionEntity.id }.map {
+                val user = it[TransactionShares.user].value
+                val amount = it[TransactionShares.amount]
+                Pair(user, amount)
+            }
+
+            val userEntities = UserEntity.forIds(sharesData.map { it.first })
+
+            val shares = sharesData.map { (userId, amount) ->
+                val userEntity = userEntities.find { it.id.value == userId }!!
+                val user = ExposedUserRepository.userFromEntity(userEntity)
+                TransactionShare(user, amount)
+            }
+
+            Transaction(
+                    transactionEntity.id.value,
+                    ExposedFundRepository.fundFromEntity(fundEntity),
+                    transactionEntity.amount,
+                    shares,
+                    transactionEntity.description,
+                    Instant.ofEpochMilli(transactionEntity.timestamp.millis),
+                    transactionEntity.status
+            )
+        } else {
+            null
         }
-
-        val userEntities = UserEntity.forIds(sharesData.map { it.first })
-
-        val shares = sharesData.map { (userId, amount) ->
-            val userEntity = userEntities.find { it.id.value == userId }!!
-            val user = ExposedUserRepository.userFromEntity(userEntity)
-            TransactionShare(user, amount)
-        }
-
-
-        Transaction(
-                transactionEntity.id.value,
-                ExposedFundRepository.fundFromEntity(fundEntity),
-                transactionEntity.amount,
-                shares,
-                transactionEntity.description,
-                Instant.ofEpochMilli(transactionEntity.timestamp.millis),
-                transactionEntity.status
-        )
     }
 
     override fun createTransaction(fund: Fund,

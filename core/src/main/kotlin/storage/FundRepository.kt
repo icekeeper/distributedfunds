@@ -8,7 +8,7 @@ interface FundRepository {
 
     fun create(name: String, description: String, supervisor: User): Fund
 
-    fun get(id: Long): Fund
+    fun get(id: Long): Fund?
 
     fun getAll(): List<Fund>
 
