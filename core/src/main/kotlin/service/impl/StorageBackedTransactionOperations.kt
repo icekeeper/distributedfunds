@@ -5,6 +5,7 @@ import model.transaction.TransactionShare
 import model.transaction.TransactionStatus
 import service.TransactionOperations
 import service.error.EntityNotFoundException
+import service.error.InvalidArgumentException
 import storage.FundRepository
 import storage.TransactionRepository
 import storage.UserRepository
@@ -20,6 +21,10 @@ class StorageBackedTransactionOperations(val userRepository: UserRepository,
                                    description: String,
                                    userAmountPairs: List<Pair<Long, Int>>,
                                    status: TransactionStatus): Transaction {
+        if (description.length > 1000) {
+            throw InvalidArgumentException("Description must be no longer than 1000 characters")
+        }
+
         val fund = fundRepository.get(fundId) ?: throw EntityNotFoundException("Not found fund with id = $fundId")
         val users = userRepository.get(userAmountPairs.map { it.first })
 
@@ -32,6 +37,11 @@ class StorageBackedTransactionOperations(val userRepository: UserRepository,
         val shares = userAmountPairs.map { (userId, amount) ->
             val user = users.find { it.id == userId }!!
             TransactionShare(user, amount)
+        }
+
+        val balanceSum = userAmountPairs.map { it.second }.reduce { acc, i -> acc + i }
+        if (balanceSum != 0) {
+            throw InvalidArgumentException("Sum of all balance adjustments must be 0")
         }
 
         return transactionRepository.createTransaction(fund, amount, description, shares, status, Instant.now())
