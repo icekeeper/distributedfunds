@@ -1,4 +1,4 @@
 package service.error
 
 
-class InvalidArgumentException(message: String) : Exception(message)
+class InvalidArgumentException(message: String) : OperationsException(message)

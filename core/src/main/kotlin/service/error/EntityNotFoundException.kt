@@ -1,4 +1,4 @@
 package service.error
 
 
-class EntityNotFoundException(message: String) : Exception(message)
+class EntityNotFoundException(message: String) : OperationsException(message)
