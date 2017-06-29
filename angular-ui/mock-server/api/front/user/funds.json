@@ -1,0 +1,26 @@
+[
+  {
+    "fund": {
+      "id": 1,
+      "name": "Good fund!",
+      "description": "Good"
+    },
+    "balance": 1000.00
+  },
+  {
+    "fund": {
+      "id": 2,
+      "name": "Bad fund :(",
+      "description": "Bad"
+    },
+    "balance": -990.00
+  },
+  {
+    "fund": {
+      "id": 3,
+      "name": "Just normal fund",
+      "description": "Normal"
+    },
+    "balance": 0.00
+  }
+]

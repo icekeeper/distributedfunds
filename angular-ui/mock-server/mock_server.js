@@ -8,7 +8,7 @@ http.createServer(function (req, res) {
     res.end('Bad url');
     return;
   }
-  var dataFile = (req.url.startsWith('/') ? '.' : '') + req.url;
+  var dataFile = (req.url.startsWith('/') ? '.' : '') + req.url + '.json';
   if (!fs.existsSync(dataFile) || !fs.lstatSync(dataFile).isFile()) {
     console.log('No corresponding file found');
     res.end('No data');
