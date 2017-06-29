@@ -4,11 +4,11 @@ import {UserFund} from "./model/user.fund";
 
 @Component({
     moduleId: module.id,
-    selector: 'home',
+    selector: 'funds',
     templateUrl: './html/funds.component.html',
     styleUrls: ['./css/funds.component.css']
 })
-export class FundsComponent implements OnInit {
+export class UserFundsComponent implements OnInit {
     userFunds: UserFund[]
 
     constructor(private fundService: FundService) {

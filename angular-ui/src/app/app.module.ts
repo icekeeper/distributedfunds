@@ -6,8 +6,10 @@ import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
 import {UserService} from "./service/user.service";
 import {AlertComponent} from "./alert.component";
-import {FundsComponent} from "./funds.component";
+import {UserFundsComponent} from "./user.funds.component";
 import {FundService} from "./service/fund.service";
+import {UserComponent} from "./user.component";
+import {FundsPageComponent} from "./funds.page.component";
 
 @NgModule({
     imports: [
@@ -19,7 +21,10 @@ import {FundService} from "./service/fund.service";
     declarations: [
         AppComponent,
 
-        FundsComponent,
+        FundsPageComponent,
+
+        UserFundsComponent,
+        UserComponent,
 
         AlertComponent,
     ],

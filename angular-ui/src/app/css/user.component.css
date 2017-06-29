@@ -1,0 +1,16 @@
+.user {
+    margin-top: 15px;
+    height: 100px;
+}
+
+.user-info {
+    margin-left: 100px;
+    height: 100px;
+    padding-left: 15px;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+.user-name {
+    font-size: x-large;
+}
