@@ -1,9 +1,0 @@
-{
-  "server": {
-    "baseDir": "src",
-    "routes": {
-      "/node_modules": "node_modules",
-      "/api": "http://localhost:8080/services/api"
-    }
-  }
-}

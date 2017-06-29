@@ -1,0 +1,17 @@
+<div>
+    <div>
+        <h2 class="sub-header">
+            Funds
+        </h2>
+    </div>
+    <ul class="list-group">
+        <li *ngFor="let userFund of userFunds" class="list-group-item">
+            <a style="color: black" href="fund.html">{{userFund.fund.name}}</a>
+            <div class="pull-right">
+                <span [class]="getFundClass(userFund.balance)">
+                    {{userFund.balance}} RUB
+                </span>
+            </div>
+        </li>
+    </ul>
+</div>
