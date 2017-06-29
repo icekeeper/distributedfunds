@@ -17,9 +17,9 @@ class StorageBackedTransactionOperations(val userRepository: UserRepository,
                                          val transactionRepository: TransactionRepository) : TransactionOperations {
 
     override fun createTransaction(fundId: Long,
-                                   amount: Int,
+                                   amount: Long,
                                    description: String,
-                                   userAmountPairs: List<Pair<Long, Int>>,
+                                   userAmountPairs: List<Pair<Long, Long>>,
                                    status: TransactionStatus): Transaction {
         if (description.length > 1000) {
             throw InvalidArgumentException("Description must be no longer than 1000 characters")
@@ -40,7 +40,7 @@ class StorageBackedTransactionOperations(val userRepository: UserRepository,
         }
 
         val balanceSum = userAmountPairs.map { it.second }.reduce { acc, i -> acc + i }
-        if (balanceSum != 0) {
+        if (balanceSum != 0L) {
             throw InvalidArgumentException("Sum of all balance adjustments must be 0")
         }
 

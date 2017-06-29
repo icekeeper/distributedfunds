@@ -29,11 +29,11 @@ data class CreateFundRequestDto(val name: String,
                                 val userIds: List<Long>) : Dto
 
 data class TransactionShareDto(val user: UserDto,
-                               val amount: Int) : Dto
+                               val amount: Long) : Dto
 
 data class TransactionDto(val id: Long,
                           val fundId: Long,
-                          val amount: Int,
+                          val amount: Long,
                           val description: String,
                           val timestamp: Long,
                           val status: TransactionStatus,
@@ -45,13 +45,13 @@ data class TransactionsPageDto(val data: List<TransactionDto>,
                                val totalCount: Int) : Dto
 
 data class CreateTransactionShareDto(val userId: Long,
-                                     val amount: Int) : Dto
+                                     val amount: Long) : Dto
 
 data class CreateTransactionRequestDto(val fundId: Long,
-                                       val amount: Int,
+                                       val amount: Long,
                                        val description: String,
                                        val shares: List<CreateTransactionShareDto>) : Dto
 
-data class FundUserBalanceDto(val fundId: Long,
-                              val userId: Long,
-                              val balance: Int) : Dto
+data class FundUserBalanceDto(val user: UserDto,
+                              val fund: FundDescriptionDto,
+                              val balance: Long) : Dto

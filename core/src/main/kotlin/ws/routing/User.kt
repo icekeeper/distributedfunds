@@ -5,6 +5,7 @@ import org.jetbrains.ktor.application.call
 import org.jetbrains.ktor.routing.Route
 import org.jetbrains.ktor.routing.get
 import org.jetbrains.ktor.routing.route
+import org.jetbrains.ktor.sessions.sessionOrNull
 import service.UserOperations
 import ws.CreateUserRequestDto
 import ws.UserDto
@@ -16,6 +17,14 @@ fun Route.user(userOperations: UserOperations) {
         post<CreateUserRequestDto> { (login, name) ->
             val user = userOperations.registerUser(login, name)
             call.respond(userToDto(user))
+        }
+
+        authorized {
+            get {
+                val session = call.sessionOrNull<Session>()!!
+                val user = userOperations.getUser(session.userId)
+                call.respond(userToDto(user))
+            }
         }
 
         get("{id}") {

@@ -3,7 +3,10 @@ package ws.routing
 import org.jetbrains.ktor.application.ApplicationCallPipeline
 import org.jetbrains.ktor.application.call
 import org.jetbrains.ktor.http.HttpStatusCode
-import org.jetbrains.ktor.routing.*
+import org.jetbrains.ktor.routing.Route
+import org.jetbrains.ktor.routing.param
+import org.jetbrains.ktor.routing.post
+import org.jetbrains.ktor.routing.route
 import org.jetbrains.ktor.sessions.session
 import org.jetbrains.ktor.sessions.sessionOrNull
 import service.UserOperations
@@ -18,14 +21,6 @@ fun Route.login(userOperations: UserOperations) {
                 val id = call.parameters["id"]?.toLong()!!
                 val user = userOperations.getUser(id)
                 call.session(Session(id))
-                call.respond(userToDto(user))
-            }
-        }
-
-        authorized {
-            get {
-                val session = call.sessionOrNull<Session>()!!
-                val user = userOperations.getUser(session.userId)
                 call.respond(userToDto(user))
             }
         }

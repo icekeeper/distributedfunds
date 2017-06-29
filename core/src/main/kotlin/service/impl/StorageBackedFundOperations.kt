@@ -1,5 +1,6 @@
 package service.impl
 
+import model.Balance
 import model.Fund
 import model.User
 import service.error.EntityNotFoundException
@@ -65,10 +66,16 @@ class StorageBackedFundOperations(val fundRepository: FundRepository,
         return fundRepository.getAll()
     }
 
-    override fun getFundUserBalance(fundId: Long, userId: Long): Int {
+    override fun getFundUserBalance(fundId: Long, userId: Long): Balance {
         val fund = fundRepository.get(fundId) ?: throw EntityNotFoundException("Not found fund with id = $fundId")
         val user = userRepository.get(userId) ?: throw EntityNotFoundException("Not found user with id = $userId")
         return transactionRepository.getUserBalance(fund, user)
+    }
+
+    override fun getFundUserBalances(userId: Long): List<Balance> {
+        val user = userRepository.get(userId) ?: throw EntityNotFoundException("Not found user with id = $userId")
+        val funds = fundRepository.getUserFunds(user)
+        return transactionRepository.getUserBalances(funds, user)
     }
 
     private fun validateDescription(description: String) {

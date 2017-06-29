@@ -4,4 +4,4 @@ import model.User
 
 
 class TransactionShare(val user: User,
-                       val amount: Int)
+                       val amount: Long)

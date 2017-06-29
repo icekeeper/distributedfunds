@@ -1,5 +1,6 @@
 package storage
 
+import model.Balance
 import model.Fund
 import model.User
 import model.transaction.Transaction
@@ -13,7 +14,7 @@ interface TransactionRepository {
     fun get(id: Long): Transaction?
 
     fun createTransaction(fund: Fund,
-                          amount: Int,
+                          amount: Long,
                           description: String,
                           shares: List<TransactionShare>,
                           status: TransactionStatus,
@@ -23,5 +24,7 @@ interface TransactionRepository {
 
     fun getUserTransactions(fund: Fund, user: User, fromTransactionId: Long, limit: Int): List<Transaction>
 
-    fun getUserBalance(fund: Fund, user: User): Int
+    fun getUserBalance(fund: Fund, user: User): Balance
+
+    fun getUserBalances(funds: List<Fund>, user: User): List<Balance>
 }

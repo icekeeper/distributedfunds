@@ -22,4 +22,6 @@ interface FundRepository {
 
     fun getLinkedUsers(fund: Fund): List<User>
 
+    fun getUserFunds(user: User): List<Fund>
+
 }

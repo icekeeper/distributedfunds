@@ -1,9 +1,11 @@
 package ws.routing
 
+import model.Balance
 import model.Fund
 import org.jetbrains.ktor.application.call
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.routing.*
+import org.jetbrains.ktor.sessions.sessionOrNull
 import service.FundOperations
 import ws.*
 import ws.util.post
@@ -58,8 +60,16 @@ fun Route.fund(fundOperations: FundOperations) {
             val userId = call.parameters["userId"]!!.toLong()
 
             val balance = fundOperations.getFundUserBalance(fundId, userId)
+            call.respond(balanceToDto(balance))
+        }
+    }
 
-            call.respond(FundUserBalanceDto(fundId, userId, balance))
+    authorized {
+        get("user/funds") {
+            val session = call.sessionOrNull<Session>()!!
+            val balances = fundOperations.getFundUserBalances(session.userId)
+
+            call.respond(DtoCollection(balances.map { balanceToDto(it) }))
         }
     }
 }
@@ -71,6 +81,12 @@ fun fundToDescriptionDto(fund: Fund): FundDescriptionDto {
 fun fundToFundDto(fund: Fund, fundOperations: FundOperations): FundDto {
     val users = fundOperations.getFundUsers(fund.id).map { userToDto(it) }
     return FundDto(fund.id, fund.name, fund.description, userToDto(fund.supervisor), users)
+}
+
+fun balanceToDto(balance: Balance): FundUserBalanceDto {
+    val userDto = userToDto(balance.user)
+    val fundDescriptionDto = fundToDescriptionDto(balance.fund)
+    return FundUserBalanceDto(userDto, fundDescriptionDto, balance.value)
 }
 
 

@@ -9,7 +9,7 @@ interface BirthdayTransactionOperations {
                                         fromUserId: Long,
                                         toUserId: Long,
                                         description: String,
-                                        amount: Int): Transaction
+                                        amount: Long): Transaction
 
     /* Common scenario for gift transaction:
      * one person buys a gift while all other members of a fund
@@ -25,7 +25,7 @@ interface BirthdayTransactionOperations {
                               buyerId: Long,
                               receiverId: Long,
                               description: String,
-                              price: Int): Transaction
+                              price: Long): Transaction
 
 
     fun getUserTransactionsCount(fundId: Long,

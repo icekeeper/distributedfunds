@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.Table
 object Funds : LongIdTable() {
     val name = varchar("name", 100).uniqueIndex()
     val description = varchar("description", 1000)
-    val creator = reference("supervisor", Users)
+    val supervisor = reference("supervisor", Users)
 }
 
 object FundsUsers : Table() {
@@ -22,7 +22,7 @@ class FundEntity(id: EntityID<Long>) : LongEntity(id) {
 
     var name by Funds.name
     var description by Funds.description
-    var supervisor by Funds.creator
+    var supervisor by Funds.supervisor
 
 }
 

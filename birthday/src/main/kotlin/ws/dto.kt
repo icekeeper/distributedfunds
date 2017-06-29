@@ -3,10 +3,10 @@ package ws
 data class CreateRedistributionTransactionRequest(val fundId: Long,
                                                   val toUserId: Long,
                                                   val description: String,
-                                                  val amount: Int) : Dto
+                                                  val amount: Long) : Dto
 
 
 data class CreateGiftTransactionRequest(val fundId: Long,
                                         val receiverId: Long,
                                         val description: String,
-                                        val price: Int) : Dto
+                                        val price: Long) : Dto

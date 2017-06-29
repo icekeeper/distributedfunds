@@ -16,7 +16,7 @@ class CoreBasedBirthdayTransactionOperations(val transactionOperations: Transact
                                                  fromUserId: Long,
                                                  toUserId: Long,
                                                  description: String,
-                                                 amount: Int): Transaction {
+                                                 amount: Long): Transaction {
 
         return transactionOperations.createTransaction(fundId, 0, description, listOf(Pair(fromUserId, amount), Pair(toUserId, -amount)))
     }
@@ -25,7 +25,7 @@ class CoreBasedBirthdayTransactionOperations(val transactionOperations: Transact
                                        buyerId: Long,
                                        receiverId: Long,
                                        description: String,
-                                       price: Int): Transaction {
+                                       price: Long): Transaction {
 
         val fundUsers = fundOperations.getFundUsers(fundId)
         val partakerIds = fundUsers.map { it.id }.filter { it != buyerId && it != receiverId }
@@ -34,13 +34,13 @@ class CoreBasedBirthdayTransactionOperations(val transactionOperations: Transact
         val reminder = price % (partakerIds.size + 1)
 
         val userAmountPairs = listOf(Pair(buyerId, price - share)) +
-                if (reminder == 0) {
+                if (reminder == 0L) {
                     partakerIds.map { Pair(it, -share) }
                 } else {
                     val initial = partakerIds.map { Pair(it, -share) }.toMutableList()
                     Collections.shuffle(initial)
-                    val luckyWinners = initial.subList(0, reminder).map { Pair(it.first, it.second - 1) }
-                    val loosers = initial.subList(reminder, initial.size)
+                    val luckyWinners = initial.subList(0, reminder.toInt()).map { Pair(it.first, it.second - 1) }
+                    val loosers = initial.subList(reminder.toInt(), initial.size)
 
                     luckyWinners + loosers
                 }

@@ -71,7 +71,12 @@ class ExposedFundRepository : FundRepository {
     }
 
     override fun linkUsers(fund: Fund, users: List<User>) = transaction {
-        val linkedUserIds = FundsUsers.select { FundsUsers.fund eq fund.id }.map { it[FundsUsers.user].value }.toSet()
+        val linkedUserIds = FundsUsers
+                .slice(FundsUsers.user)
+                .select { FundsUsers.fund eq fund.id }
+                .map { it[FundsUsers.user].value }
+                .toSet()
+
         val notLinkedUserIds = users.filterNot { linkedUserIds.contains(it.id) }.map { it.id }
 
         if (!notLinkedUserIds.isEmpty()) {
@@ -93,7 +98,32 @@ class ExposedFundRepository : FundRepository {
     }
 
     override fun getLinkedUsers(fund: Fund): List<User> = transaction {
-        val linkedUserIds = FundsUsers.select { FundsUsers.fund eq fund.id }.map { it[FundsUsers.user] }
+        val linkedUserIds = FundsUsers
+                .slice(FundsUsers.user)
+                .select { FundsUsers.fund eq fund.id }
+                .map { it[FundsUsers.user] }
+
         UserEntity.forEntityIds(linkedUserIds).map { ExposedUserRepository.userFromEntity(it) }
+    }
+
+    override fun getUserFunds(user: User): List<Fund> = transaction {
+        val fundIds = FundsUsers
+                .slice(FundsUsers.fund)
+                .select { FundsUsers.user eq user.id }
+                .map { it[FundsUsers.fund] }
+
+        val supervisorIdsByFund: MutableMap<Long, EntityID<Long>> = mutableMapOf()
+        Funds
+                .slice(Funds.id, Funds.supervisor)
+                .select { Funds.id inList fundIds }
+                .forEach { supervisorIdsByFund.put(it[Funds.id].value, it[Funds.supervisor]) }
+
+        val supervisors = UserEntity.forEntityIds(supervisorIdsByFund.values.toList()).toList()
+
+        FundEntity.forEntityIds(fundIds).map {
+            val supervisorId = supervisorIdsByFund[it.id.value]
+            val supervisorEntity = supervisors.first { it.id == supervisorId }
+            fundFromEntity(it, supervisorEntity)
+        }
     }
 }

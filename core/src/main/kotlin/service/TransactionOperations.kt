@@ -7,9 +7,9 @@ interface TransactionOperations {
 
 
     fun createTransaction(fundId: Long,
-                          amount: Int,
+                          amount: Long,
                           description: String,
-                          userAmountPairs: List<Pair<Long, Int>>,
+                          userAmountPairs: List<Pair<Long, Long>>,
                           status: TransactionStatus = TransactionStatus.PENDING): Transaction
 
     fun getUserTransactionsCount(fundId: Long,

@@ -1,5 +1,6 @@
 package service
 
+import model.Balance
 import model.Fund
 import model.User
 
@@ -22,6 +23,9 @@ interface FundOperations {
 
     fun getFundUsers(fundId: Long): List<User>
 
-    fun getFundUserBalance(fundId: Long, userId: Long): Int
+    fun getFundUserBalance(fundId: Long, userId: Long): Balance
+
+    fun getFundUserBalances(userId: Long): List<Balance>
+
 }
 

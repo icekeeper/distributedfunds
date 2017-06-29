@@ -1,5 +1,6 @@
 package storage.exposed
 
+import model.Balance
 import model.Fund
 import model.User
 import model.transaction.Transaction
@@ -54,7 +55,7 @@ class ExposedTransactionRepository : TransactionRepository {
     }
 
     override fun createTransaction(fund: Fund,
-                                   amount: Int,
+                                   amount: Long,
                                    description: String,
                                    shares: List<TransactionShare>,
                                    status: TransactionStatus,
@@ -124,12 +125,26 @@ class ExposedTransactionRepository : TransactionRepository {
         }.sortedByDescending { it.id }
     }
 
-    override fun getUserBalance(fund: Fund, user: User): Int = transaction {
-        Transactions.innerJoin(TransactionShares.source)
+    override fun getUserBalance(fund: Fund, user: User): Balance = transaction {
+        val value = Transactions.innerJoin(TransactionShares.source)
                 .slice(TransactionShares.user, TransactionShares.amount.sum())
                 .select { (TransactionShares.user eq user.id) and (Transactions.fund eq fund.id) }
                 .groupBy(TransactionShares.user)
                 .firstOrNull()
                 ?.let { it[TransactionShares.amount.sum()] } ?: 0
+
+        Balance(user, fund, value)
+    }
+
+    override fun getUserBalances(funds: List<Fund>, user: User): List<Balance> = transaction {
+        val fundToBalance: MutableMap<Long, Long> = mutableMapOf()
+
+        Transactions.innerJoin(TransactionShares.source)
+                .slice(TransactionShares.user, Transactions.fund, TransactionShares.amount.sum())
+                .select { (TransactionShares.user eq user.id) and (Transactions.fund inList funds.map { it.id }) }
+                .groupBy(TransactionShares.user, Transactions.fund)
+                .forEach { fundToBalance.put(it[Transactions.fund].value, it[TransactionShares.amount.sum()] ?: 0) }
+
+        funds.map { Balance(user, it, fundToBalance.getOrDefault(it.id, 0)) }
     }
 }
