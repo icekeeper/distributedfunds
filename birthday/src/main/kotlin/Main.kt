@@ -51,7 +51,7 @@ fun main(args: Array<String>) {
             route("/api/front") {
                 login(userOperations)
                 user(userOperations)
-                fund(fundOperations)
+                birthdayFunds(fundOperations)
                 birthdayTransaction(birthdayTransactionOperations)
             }
         }
