@@ -34,5 +34,11 @@ class ExposedUserRepository : UserRepository {
             UserEntity.forIds(ids).map { userFromEntity(it) }
         }
     }
+
+    override fun getAll(): List<User> {
+        return transaction {
+            UserEntity.all().map { userFromEntity(it) }
+        }
+    }
 }
 

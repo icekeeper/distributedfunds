@@ -10,4 +10,6 @@ interface UserRepository {
     fun get(id: Long): User?
 
     fun get(ids: List<Long>): List<User>
+
+    fun getAll(): List<User>
 }

@@ -1,10 +1,11 @@
 package service.impl
 
 import model.User
+import service.UserOperations
 import service.error.EntityNotFoundException
 import service.error.InvalidArgumentException
 
-class StorageBackedUserOperations(val userRepository: storage.UserRepository) : service.UserOperations {
+class StorageBackedUserOperations(val userRepository: storage.UserRepository) : UserOperations {
 
     override fun registerUser(login: String, name: String): User {
         if (login.isBlank() || login.length > 50) {
@@ -20,6 +21,10 @@ class StorageBackedUserOperations(val userRepository: storage.UserRepository) : 
     override fun getUser(userId: Long): User {
         val user = userRepository.get(userId) ?: throw EntityNotFoundException("Not found user with userId = $userId")
         return user
+    }
+
+    override fun getAllUsers(): List<User> {
+        return userRepository.getAll().sortedBy { it.login }
     }
 }
 

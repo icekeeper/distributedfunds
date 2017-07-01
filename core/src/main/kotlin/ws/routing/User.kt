@@ -8,6 +8,7 @@ import org.jetbrains.ktor.routing.route
 import org.jetbrains.ktor.sessions.sessionOrNull
 import service.UserOperations
 import ws.CreateUserRequestDto
+import ws.DtoCollection
 import ws.UserDto
 import ws.util.post
 
@@ -31,6 +32,11 @@ fun Route.user(userOperations: UserOperations) {
             val id = call.parameters["id"]?.toLong()
             val user = userOperations.getUser(id!!)
             call.respond(userToDto(user))
+        }
+
+        get("all") {
+            val users = userOperations.getAllUsers()
+            call.respond(DtoCollection(users.map { userToDto(it) }))
         }
 
     }
