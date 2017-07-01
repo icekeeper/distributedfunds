@@ -5,7 +5,6 @@ import org.jetbrains.ktor.host.embeddedServer
 import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.jetty.Jetty
 import org.jetbrains.ktor.logging.CallLogging
-import org.jetbrains.ktor.response.respondText
 import org.jetbrains.ktor.routing.route
 import org.jetbrains.ktor.routing.routing
 import org.jetbrains.ktor.sessions.SessionCookieTransformerMessageAuthentication
@@ -42,8 +41,7 @@ fun main(args: Array<String>) {
                 try {
                     proceed()
                 } catch (exception: OperationsException) {
-                    call.response.status(HttpStatusCode.BadRequest)
-                    call.respondText(exception.message)
+                    call.respond(exception)
                     finish()
                 } catch (exception: Exception) {
                     log.error(exception)

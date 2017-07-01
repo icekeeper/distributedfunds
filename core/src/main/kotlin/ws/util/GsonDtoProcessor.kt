@@ -14,8 +14,10 @@ import org.jetbrains.ktor.routing.application
 import org.jetbrains.ktor.routing.method
 import org.jetbrains.ktor.routing.route
 import org.jetbrains.ktor.util.AttributeKey
+import service.error.OperationsException
 import ws.Dto
 import ws.DtoCollection
+import ws.ErrorDto
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.Charset
@@ -24,6 +26,7 @@ import java.nio.charset.Charset
 class GsonDtoProcessor(val gson: Gson) {
 
     companion object Feature : ApplicationFeature<Application, Gson, GsonDtoProcessor> {
+        private val jsonContentType = ContentType.Application.Json.withCharset(Charsets.UTF_8)
         private val CallResponsePipelineInterceptPhase = PipelinePhase("CallResponseIntercept")
 
         override val key = AttributeKey<GsonDtoProcessor>("GsonDtoParser")
@@ -33,12 +36,16 @@ class GsonDtoProcessor(val gson: Gson) {
             pipeline.phases.insertBefore(ApplicationCallPipeline.Infrastructure, CallResponsePipelineInterceptPhase)
             pipeline.intercept(CallResponsePipelineInterceptPhase) { call ->
                 call.response.pipeline.intercept(ApplicationResponsePipeline.Transform) {
-                    if (subject is Dto) {
-                        val response = TextContent(gson.toJson(subject), ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                    val responseObject = subject
+                    if (responseObject is OperationsException) {
+                        val dto = ErrorDto(responseObject.errorCode.toString(), responseObject.parameters.toList())
+                        val response = TextContent(gson.toJson(dto), jsonContentType, responseObject.httpStatusCode)
                         proceedWith(response)
-                    } else if (subject is DtoCollection) {
-                        val dtoCollection = (subject as DtoCollection).collection
-                        val response = TextContent(gson.toJson(dtoCollection), ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                    } else if (responseObject is Dto) {
+                        val response = TextContent(gson.toJson(responseObject), jsonContentType)
+                        proceedWith(response)
+                    } else if (responseObject is DtoCollection) {
+                        val response = TextContent(gson.toJson(responseObject.collection), jsonContentType)
                         proceedWith(response)
                     } else {
                         proceed()

@@ -1,4 +1,8 @@
 package service.error
 
+import org.jetbrains.ktor.http.HttpStatusCode
 
-open class OperationsException(override val message: String) : Exception(message)
+
+open class OperationsException(val errorCode: OperationsErrorCode,
+                               val httpStatusCode: HttpStatusCode = HttpStatusCode.BadRequest,
+                               vararg val parameters: String) : Exception()

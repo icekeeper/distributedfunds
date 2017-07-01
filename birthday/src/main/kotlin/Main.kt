@@ -1,7 +1,8 @@
-package ws
-
+import org.jetbrains.ktor.application.ApplicationCallPipeline
 import org.jetbrains.ktor.application.install
+import org.jetbrains.ktor.application.log
 import org.jetbrains.ktor.host.embeddedServer
+import org.jetbrains.ktor.http.HttpStatusCode
 import org.jetbrains.ktor.jetty.Jetty
 import org.jetbrains.ktor.logging.CallLogging
 import org.jetbrains.ktor.routing.route
@@ -11,6 +12,7 @@ import org.jetbrains.ktor.sessions.SessionCookiesSettings
 import org.jetbrains.ktor.sessions.withCookieByValue
 import org.jetbrains.ktor.sessions.withSessions
 import org.jetbrains.ktor.util.hex
+import service.error.OperationsException
 import service.impl.CoreBasedBirthdayTransactionOperations
 import service.impl.StorageBackedFundOperations
 import service.impl.StorageBackedTransactionOperations
@@ -37,6 +39,19 @@ fun main(args: Array<String>) {
 
     val server = embeddedServer(Jetty, 8080) {
         routing {
+            intercept(ApplicationCallPipeline.ApplicationPhase.Infrastructure) { call ->
+                try {
+                    proceed()
+                } catch (exception: OperationsException) {
+                    call.respond(exception)
+                    finish()
+                } catch (exception: Exception) {
+                    log.error(exception)
+                    call.response.status(HttpStatusCode.InternalServerError)
+                    finish()
+                }
+            }
+
             install(CallLogging)
             install(GsonDtoProcessor)
 

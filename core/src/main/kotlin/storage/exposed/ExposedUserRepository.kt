@@ -1,9 +1,11 @@
 package storage.exposed
 
 import model.User
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import storage.UserRepository
 import storage.dao.UserEntity
+import storage.dao.Users
 
 class ExposedUserRepository : UserRepository {
 
@@ -26,6 +28,17 @@ class ExposedUserRepository : UserRepository {
     override fun get(id: Long): User? {
         return transaction {
             UserEntity.findById(id)?.let { userFromEntity(it) }
+        }
+    }
+
+    override fun get(login: String): User? {
+        return transaction {
+            Users.slice(Users.id)
+                    .select { Users.login eq login }
+                    .map { it[Users.id] }
+                    .firstOrNull()
+                    ?.let { UserEntity[it] }
+                    ?.let { userFromEntity(it) }
         }
     }
 

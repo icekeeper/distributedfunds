@@ -55,3 +55,6 @@ data class CreateTransactionRequestDto(val fundId: Long,
 data class FundUserBalanceDto(val user: UserDto,
                               val fund: FundDescriptionDto,
                               val balance: Long) : Dto
+
+data class ErrorDto(val code: String,
+                    val parameters: List<String>) : Dto
