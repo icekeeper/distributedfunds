@@ -7,21 +7,22 @@ import service.TransactionOperations
 import service.error.OperationsErrorCode
 import service.error.OperationsException
 import storage.FundRepository
+import storage.TransactionFilter
 import storage.TransactionRepository
 import storage.UserRepository
 import java.time.Instant
 
 
-class StorageBackedTransactionOperations(val userRepository: UserRepository,
-                                         val fundRepository: FundRepository,
-                                         val transactionRepository: TransactionRepository) : TransactionOperations {
+open class StorageBackedTransactionOperations(val userRepository: UserRepository,
+                                              val fundRepository: FundRepository,
+                                              val transactionRepository: TransactionRepository) : TransactionOperations {
 
     override fun createTransaction(fundId: Long,
                                    amount: Long,
                                    description: String,
                                    userAmountPairs: List<Pair<Long, Long>>,
                                    status: TransactionStatus): Transaction {
-        if (description.length > 1000) {
+        if (description.length > 100) {
             throw OperationsException(OperationsErrorCode.TRANSACTION_DESCRIPTION_TOO_LONG, parameters = description.length.toString())
         }
 
@@ -47,17 +48,13 @@ class StorageBackedTransactionOperations(val userRepository: UserRepository,
         return transactionRepository.createTransaction(fund, amount, description, shares, status, Instant.now())
     }
 
-    override fun getUserTransactionsCount(fundId: Long, userId: Long): Int {
+    override fun getTransactionsCount(fundId: Long): Int {
         val fund = fundRepository.get(fundId) ?: throw OperationsException(OperationsErrorCode.INCORRECT_FUND_ID, parameters = fundId.toString())
-        val user = userRepository.get(userId) ?: throw OperationsException(OperationsErrorCode.INCORRECT_USER_ID, parameters = userId.toString())
-
-        return transactionRepository.getUserTransactionsCount(fund, user)
+        return transactionRepository.getTransactionsCount(TransactionFilter(fund))
     }
 
-    override fun getUserTransactions(fundId: Long, userId: Long, fromTransactionId: Long, limit: Int): List<Transaction> {
+    override fun getTransactions(fundId: Long, limit: Int, offset: Int): List<Transaction> {
         val fund = fundRepository.get(fundId) ?: throw OperationsException(OperationsErrorCode.INCORRECT_FUND_ID, parameters = fundId.toString())
-        val user = userRepository.get(userId) ?: throw OperationsException(OperationsErrorCode.INCORRECT_USER_ID, parameters = userId.toString())
-
-        return transactionRepository.getUserTransactions(fund, user, fromTransactionId, limit)
+        return transactionRepository.getTransactions(TransactionFilter(fund), limit, offset)
     }
 }

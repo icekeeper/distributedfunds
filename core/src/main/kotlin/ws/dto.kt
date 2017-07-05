@@ -1,6 +1,7 @@
 package ws
 
 import model.transaction.TransactionStatus
+import org.jetbrains.ktor.http.HttpStatusCode
 
 interface Dto
 
@@ -40,8 +41,8 @@ data class TransactionDto(val id: Long,
                           val shares: List<TransactionShareDto>) : Dto
 
 data class TransactionsPageDto(val data: List<TransactionDto>,
-                               val fromTransactionId: Long,
                                val limit: Int,
+                               val offset: Int,
                                val totalCount: Int) : Dto
 
 data class CreateTransactionShareDto(val userId: Long,
@@ -55,6 +56,15 @@ data class CreateTransactionRequestDto(val fundId: Long,
 data class FundUserBalanceDto(val user: UserDto,
                               val fund: FundDescriptionDto,
                               val balance: Long) : Dto
+
+data class Page(val data: List<Dto>,
+                val pageNumber: Int,
+                val pageSize: Int,
+                val pagesCount: Int) : Dto
+
+data class ErrorResponse(val code: String,
+                         val httpStatusCode: HttpStatusCode = HttpStatusCode.BadRequest,
+                         val parameters: List<String>)
 
 data class ErrorDto(val code: String,
                     val parameters: List<String>) : Dto

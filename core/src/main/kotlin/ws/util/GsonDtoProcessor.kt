@@ -14,10 +14,10 @@ import org.jetbrains.ktor.routing.application
 import org.jetbrains.ktor.routing.method
 import org.jetbrains.ktor.routing.route
 import org.jetbrains.ktor.util.AttributeKey
-import service.error.OperationsException
 import ws.Dto
 import ws.DtoCollection
 import ws.ErrorDto
+import ws.ErrorResponse
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.Charset
@@ -37,8 +37,8 @@ class GsonDtoProcessor(val gson: Gson) {
             pipeline.intercept(CallResponsePipelineInterceptPhase) { call ->
                 call.response.pipeline.intercept(ApplicationResponsePipeline.Transform) {
                     val responseObject = subject
-                    if (responseObject is OperationsException) {
-                        val dto = ErrorDto(responseObject.errorCode.toString(), responseObject.parameters.toList())
+                    if (responseObject is ErrorResponse) {
+                        val dto = ErrorDto(responseObject.code, responseObject.parameters.toList())
                         val response = TextContent(gson.toJson(dto), jsonContentType, responseObject.httpStatusCode)
                         proceedWith(response)
                     } else if (responseObject is Dto) {

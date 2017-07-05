@@ -20,11 +20,18 @@ interface TransactionRepository {
                           status: TransactionStatus,
                           timestamp: Instant): Transaction
 
-    fun getUserTransactionsCount(fund: Fund, user: User): Int
+    fun getTransactionsCount(filter: TransactionFilter): Int
 
-    fun getUserTransactions(fund: Fund, user: User, fromTransactionId: Long, limit: Int): List<Transaction>
+    fun getTransactions(filter: TransactionFilter, limit: Int, offset: Int): List<Transaction>
+
+    fun setTransactionStatus(transaction: Transaction, status: TransactionStatus): Transaction
 
     fun getUserBalance(fund: Fund, user: User): Balance
 
     fun getUserBalances(funds: List<Fund>, user: User): List<Balance>
 }
+
+data class TransactionFilter(val fund: Fund,
+                             val user: User? = null,
+                             val amountEq: Long? = null,
+                             val amountNeq: Long? = null)

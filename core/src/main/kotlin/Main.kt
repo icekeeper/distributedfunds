@@ -20,6 +20,7 @@ import storage.dao.initDao
 import storage.exposed.ExposedFundRepository
 import storage.exposed.ExposedTransactionRepository
 import storage.exposed.ExposedUserRepository
+import ws.ErrorResponse
 import ws.routing.*
 import ws.util.GsonDtoProcessor
 
@@ -41,7 +42,7 @@ fun main(args: Array<String>) {
                 try {
                     proceed()
                 } catch (exception: OperationsException) {
-                    call.respond(exception)
+                    call.respond(ErrorResponse(exception.errorCode.toString(), exception.httpStatusCode, exception.parameters.toList()))
                     finish()
                 } catch (exception: Exception) {
                     log.error(exception)

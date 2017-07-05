@@ -12,13 +12,9 @@ interface TransactionOperations {
                           userAmountPairs: List<Pair<Long, Long>>,
                           status: TransactionStatus = TransactionStatus.PENDING): Transaction
 
-    fun getUserTransactionsCount(fundId: Long,
-                                 userId: Long): Int
+    fun getTransactionsCount(fundId: Long): Int
 
-    fun getUserTransactions(fundId: Long,
-                            userId: Long,
-                            fromTransactionId: Long,
-                            limit: Int): List<Transaction>
+    fun getTransactions(fundId: Long, limit: Int, offset: Int): List<Transaction>
 
 
 }

@@ -9,8 +9,8 @@ import org.jetbrains.exposed.sql.Table
 
 object Transactions : LongIdTable() {
     val fund = reference("fund", Funds).index()
-    val amount = long("amount")
-    val description = varchar("description", 1000)
+    val amount = long("amountEq")
+    val description = varchar("description", 100)
     val timestamp = datetime("timestamp")
     val status = enumeration("status", TransactionStatus::class.java)
 }
@@ -18,7 +18,7 @@ object Transactions : LongIdTable() {
 object TransactionShares : Table() {
     val transaction = reference("transaction", Transactions).index()
     val user = reference("user", Users).index()
-    val amount = long("amount")
+    val amount = long("amountEq")
 
     init {
         this.index(true, transaction, user)

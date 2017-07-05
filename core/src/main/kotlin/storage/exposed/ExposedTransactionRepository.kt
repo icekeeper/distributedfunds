@@ -6,12 +6,12 @@ import model.User
 import model.transaction.Transaction
 import model.transaction.TransactionShare
 import model.transaction.TransactionStatus
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.sum
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.neq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
+import storage.TransactionFilter
 import storage.TransactionRepository
 import storage.dao.*
 import java.time.Instant
@@ -82,17 +82,17 @@ class ExposedTransactionRepository : TransactionRepository {
         Transaction(transactionEntity.id.value, fund, amount, shares, description, timestamp, status)
     }
 
-    override fun getUserTransactionsCount(fund: Fund, user: User): Int = transaction {
+    override fun getTransactionsCount(filter: TransactionFilter): Int = transaction {
         Transactions.innerJoin(TransactionShares.source)
-                .select { (TransactionShares.user eq user.id) and (Transactions.fund eq fund.id) }
+                .select(makeOp(filter))
                 .count()
     }
 
-    override fun getUserTransactions(fund: Fund, user: User, fromTransactionId: Long, limit: Int): List<Transaction> = transaction {
+    override fun getTransactions(filter: TransactionFilter, limit: Int, offset: Int): List<Transaction> = transaction {
         val transactionEntityIds = Transactions
                 .innerJoin(TransactionShares.source)
                 .slice(Transactions.id)
-                .select { (TransactionShares.user eq user.id) and (Transactions.fund eq fund.id) and (Transactions.id lessEq fromTransactionId) }
+                .select(makeOp(filter))
                 .orderBy(Transactions.id, isAsc = false)
                 .limit(limit)
                 .map { it[Transactions.id] }
@@ -116,13 +116,21 @@ class ExposedTransactionRepository : TransactionRepository {
                     }
 
             Transaction(transactionEntity.id.value,
-                    fund,
+                    filter.fund,
                     transactionEntity.amount,
                     shares,
                     transactionEntity.description,
                     Instant.ofEpochMilli(transactionEntity.timestamp.millis),
                     transactionEntity.status)
         }.sortedByDescending { it.id }
+    }
+
+    private fun makeOp(filter: TransactionFilter): Op<Boolean> {
+        var op: Op<Boolean> = Transactions.fund eq filter.fund.id
+        op = filter.user?.let { op and (TransactionShares.user eq it.id) } ?: op
+        op = filter.amountEq?.let { op and (Transactions.amount eq it) } ?: op
+        op = filter.amountNeq?.let { op and (Transactions.amount neq it) } ?: op
+        return op
     }
 
     override fun getUserBalance(fund: Fund, user: User): Balance = transaction {
@@ -146,5 +154,19 @@ class ExposedTransactionRepository : TransactionRepository {
                 .forEach { fundToBalance.put(it[Transactions.fund].value, it[TransactionShares.amount.sum()] ?: 0) }
 
         funds.map { Balance(user, it, fundToBalance.getOrDefault(it.id, 0)) }
+    }
+
+    override fun setTransactionStatus(transaction: Transaction, status: TransactionStatus): Transaction = transaction {
+        val transactionEntity = TransactionEntity[transaction.id]
+        transactionEntity.status = status
+        Transaction(
+                transactionEntity.id.value,
+                transaction.fund,
+                transactionEntity.amount,
+                transaction.shares,
+                transactionEntity.description,
+                Instant.ofEpochMilli(transactionEntity.timestamp.millis),
+                transactionEntity.status
+        )
     }
 }

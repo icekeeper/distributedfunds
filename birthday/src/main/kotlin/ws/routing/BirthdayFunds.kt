@@ -93,7 +93,7 @@ fun Route.birthdayFunds(fundOperations: FundOperations) {
 
 //TODO: use gradations
 fun formatBalance(value: Long): BalanceDto {
-    return BalanceDto("${value / 100}.${value % 100}", "")
+    return BalanceDto(moneyToString(value), "")
 }
 
 fun balanceToUserFundDescriptionDto(balance: Balance): UserFundDescriptionDto {

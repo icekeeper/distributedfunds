@@ -28,12 +28,22 @@ interface BirthdayTransactionOperations {
                               price: Long): Transaction
 
 
-    fun getUserTransactionsCount(fundId: Long,
-                                 userId: Long): Int
+    fun getUserRedistributionTransactionsCount(fundId: Long,
+                                               userId: Long): Int
 
-    fun getUserTransactions(fundId: Long,
-                            userId: Long,
-                            fromTransactionId: Long,
-                            limit: Int): List<Transaction>
+    fun getUserRedistributionsTransactions(fundId: Long,
+                                           userId: Long,
+                                           limit: Int,
+                                           offset: Int): List<Transaction>
+
+    fun getUserGiftTransactionsCount(fundId: Long,
+                                     userId: Long): Int
+
+    fun getUserGiftTransactions(fundId: Long,
+                                userId: Long,
+                                limit: Int,
+                                offset: Int): List<Transaction>
+
+    fun confirmTransaction(transactionId: Long, userId: Long)
 
 }

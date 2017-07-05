@@ -2,7 +2,10 @@ package ws.routing
 
 import model.transaction.Transaction
 import org.jetbrains.ktor.application.call
-import org.jetbrains.ktor.routing.*
+import org.jetbrains.ktor.routing.Route
+import org.jetbrains.ktor.routing.get
+import org.jetbrains.ktor.routing.optionalParam
+import org.jetbrains.ktor.routing.route
 import service.TransactionOperations
 import ws.CreateTransactionRequestDto
 import ws.TransactionDto
@@ -23,28 +26,25 @@ fun Route.transaction(transactionOperations: TransactionOperations) {
             call.respond(transactionToDto(transaction))
         }
 
-        param("userId") {
-            optionalParam("limit") {
-                optionalParam("fromTransactionId") {
-                    get {
-                        val userId = call.parameters["userId"]?.toLong()!!
-                        val fundId = call.parameters["fundId"]?.toLong()!!
+        optionalParam("limit") {
+            optionalParam("offset") {
+                get {
+                    val fundId = call.parameters["fundId"]?.toLong()!!
 
-                        val limit = call.parameters["limit"]?.toInt() ?: 10
-                        val fromTransactionId = call.parameters["fromTransactionId"]?.toLong() ?: Long.MAX_VALUE
+                    val limit = call.parameters["limit"]?.toInt() ?: 10
+                    val offset = call.parameters["offset"]?.toInt() ?: 0
 
-                        val userTransactionsCount = transactionOperations.getUserTransactionsCount(fundId, userId)
-                        val userTransactions = transactionOperations.getUserTransactions(fundId, userId, fromTransactionId, limit)
+                    val userTransactionsCount = transactionOperations.getTransactionsCount(fundId)
+                    val userTransactions = transactionOperations.getTransactions(fundId, limit, offset)
 
-                        val userTransactionDtos = userTransactions.map { transactionToDto(it) }
+                    val userTransactionDtos = userTransactions.map { transactionToDto(it) }
 
-                        val page = TransactionsPageDto(userTransactionDtos, fromTransactionId, limit, userTransactionsCount)
+                    val page = TransactionsPageDto(userTransactionDtos, limit, offset, userTransactionsCount)
 
-                        call.respond(page)
-                    }
+                    call.respond(page)
                 }
-
             }
+
 
         }
 
@@ -66,4 +66,11 @@ fun transactionToDto(transaction: Transaction): TransactionDto {
             transaction.timestamp.toEpochMilli(),
             transaction.status,
             shares)
+}
+
+fun moneyToString(amount: Long, addPlus: Boolean = false): String {
+    val sign = if (amount < 0) "-" else if (addPlus) "+" else ""
+    val decimal = Math.abs(amount) / 100
+    val fraction = Math.abs(amount) % 100
+    return "%s%d.%02d".format(sign, decimal, fraction)
 }
