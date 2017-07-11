@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
-import {FundService} from "./service/fund.service";
-import {UserFund} from "./model/user.fund";
+import {FundService} from "./core.service/fund.core.service";
+import {UserFund} from "./core.model/user.fund";
 
 @Component({
     moduleId: module.id,

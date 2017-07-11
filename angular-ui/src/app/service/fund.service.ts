@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Headers, Http} from "@angular/http";
 import "rxjs/add/operator/toPromise";
-import {AbstractService} from "./abstract.service";
-import {UserFund} from "../model/user.fund";
+import {AbstractService} from "./abstract.core.service";
+import {UserFund} from "../core.model/user.fund";
 
 @Injectable()
 export class FundService extends AbstractService {

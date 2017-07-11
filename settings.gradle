@@ -2,5 +2,5 @@ rootProject.name = 'distributedfunds'
 
 include ':core'
 include ':angular-ui'
-include ':birthday'
+include ':birthday-front'
 

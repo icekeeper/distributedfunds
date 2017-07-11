@@ -4,10 +4,10 @@ import {FormsModule} from "@angular/forms";
 import {HttpModule} from "@angular/http";
 import {AppRoutingModule} from "./app-routing.module";
 import {AppComponent} from "./app.component";
-import {UserService} from "./service/user.service";
+import {UserService} from "./core.service/user.core.service";
 import {AlertComponent} from "./alert.component";
 import {UserFundsComponent} from "./user.funds.component";
-import {FundService} from "./service/fund.service";
+import {FundService} from "./core.service/fund.core.service";
 import {UserComponent} from "./user.component";
 import {FundsPageComponent} from "./funds.page.component";
 
