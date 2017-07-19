@@ -50,7 +50,7 @@ dependencies {
     compile "org.jetbrains.ktor:ktor-core:$ktorVersion"
     compile "org.jetbrains.ktor:ktor-jetty:$ktorVersion"
     compile "org.jetbrains.ktor:ktor-locations:$ktorVersion"
-    compile 'org.jetbrains.exposed:exposed:0.8'
+    compile 'org.jetbrains.exposed:exposed:0.8.2'
 
     compile group: 'com.h2database', name: 'h2', version: '1.4.195'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
