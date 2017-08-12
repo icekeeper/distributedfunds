@@ -6,8 +6,8 @@ import core.storage.FundRepository
 import core.storage.dao.*
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -81,12 +81,9 @@ class ExposedFundRepository : FundRepository {
 
         if (!notLinkedUserIds.isEmpty()) {
             val fundEntityId = EntityID(fund.id, Funds)
-            notLinkedUserIds.forEach {
-                val userEntityId = EntityID(it, Users)
-                FundsUsers.insert {
-                    it[FundsUsers.fund] = fundEntityId
-                    it[FundsUsers.user] = userEntityId
-                }
+            FundsUsers.batchInsert(notLinkedUserIds) {
+                this[FundsUsers.fund] = fundEntityId
+                this[FundsUsers.user] = EntityID(it, Users)
             }
         }
     }

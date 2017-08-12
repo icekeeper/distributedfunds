@@ -29,4 +29,6 @@ interface TransactionRepository {
     fun getUserBalance(fund: Fund, user: User): Balance
 
     fun getUserBalances(funds: List<Fund>, user: User): List<Balance>
+
+    fun getUsersBalances(fund: Fund): List<Balance>
 }

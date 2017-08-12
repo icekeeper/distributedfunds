@@ -9,6 +9,7 @@ import core.model.transaction.TransactionStatus
 import core.storage.TransactionFilter
 import core.storage.TransactionRepository
 import core.storage.dao.*
+import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.neq
@@ -71,12 +72,10 @@ class ExposedTransactionRepository : TransactionRepository {
             this.timestamp = DateTime(timestamp.toEpochMilli())
         }
 
-        shares.forEach { share ->
-            TransactionShares.insert {
-                it[TransactionShares.transaction] = transactionEntity.id
-                it[TransactionShares.user] = UserEntity[share.user.id].id
-                it[TransactionShares.amount] = share.amount
-            }
+        TransactionShares.batchInsert(shares) {
+            this[TransactionShares.transaction] = transactionEntity.id
+            this[TransactionShares.user] = EntityID(it.user.id, Users)
+            this[TransactionShares.amount] = it.amount
         }
 
         Transaction(transactionEntity.id.value, fund, amount, shares, description, timestamp, status)
@@ -154,6 +153,18 @@ class ExposedTransactionRepository : TransactionRepository {
                 .forEach { fundToBalance.put(it[Transactions.fund].value, it[TransactionShares.amount.sum()] ?: 0) }
 
         funds.map { Balance(user, it, fundToBalance.getOrDefault(it.id, 0)) }
+    }
+
+    override fun getUsersBalances(fund: Fund): List<Balance> = transaction {
+        val userToBalance: MutableMap<Long, Long> = mutableMapOf()
+
+        Transactions.innerJoin(TransactionShares.source)
+                .slice(TransactionShares.user, TransactionShares.amount.sum())
+                .select { Transactions.fund eq fund.id }
+                .groupBy(TransactionShares.user)
+                .forEach { userToBalance.put(it[TransactionShares.user].value, it[TransactionShares.amount.sum()] ?: 0) }
+
+        UserEntity.forIds(userToBalance.keys.toList()).map { Balance(ExposedUserRepository.userFromEntity(it), fund, userToBalance.getValue(it.id.value)) }
     }
 
     override fun setTransactionStatus(transaction: Transaction, status: TransactionStatus): Transaction = transaction {

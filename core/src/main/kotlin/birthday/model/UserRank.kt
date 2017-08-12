@@ -1,0 +1,6 @@
+package birthday.model
+
+
+enum class UserRank {
+    EXTREMELY_LOW, GREATLY_LOW, SLIGHTLY_LOW, ZEN, SLIGHTLY_HIGH, GREATLY_HIGH, EXTREMELY_HIGH
+}
